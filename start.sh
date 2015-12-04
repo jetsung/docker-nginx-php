@@ -1,2 +1,1 @@
-service nginx start
-service php-fpm start
+/usr/bin/supervisord -n -c /etc/supervisord.conf

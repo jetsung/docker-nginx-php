@@ -190,9 +190,12 @@ sed -i "s@^pm.min_spare_servers.*@pm.min_spare_servers = 70@" $php_install_dir/e
 sed -i "s@^pm.max_spare_servers.*@pm.max_spare_servers = 120@" $php_install_dir/etc/php-fpm.conf
 
 #[ "$Web_yn" == 'n' ] && sed -i "s@^listen =.*@listen = $IPADDR:9000@" $php_install_dir/etc/php-fpm.conf 
-service php-fpm start
 
-cd ..
+#delete the files
+cd /data
+
+[ -e "$data_dir" ] && rm -rf $data_dir
+
 [ -e "$php_install_dir/bin/phpize" ] && rm -rf php-$php_7_version
-cd ..
+
 }

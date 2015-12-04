@@ -112,8 +112,5 @@ endscript
 }
 EOF
 
-echo "<?php \n phpinfo();" >> /data/www/index.php
-
 ldconfig
-service nginx start
 }
