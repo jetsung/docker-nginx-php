@@ -13,7 +13,8 @@ RUN apt-get update && \
 	libjpeg-dev \
 	libpng-dev \
 	libpng-dev \
-	libfreetype6-dev
+	libfreetype6-dev \
+	supervisor
 
 #Create folder
 RUN mkdir -p /home/nginx-php7
