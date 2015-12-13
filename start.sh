@@ -1,1 +1,2 @@
-/usr/bin/supervisord -n -c /etc/supervisord.conf
+/usr/local/php7/sbin/php-fpm
+/usr/local/nginx/sbin/nginx
