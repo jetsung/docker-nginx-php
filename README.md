@@ -15,7 +15,7 @@ To simply run the container:
 ```sh
 docker run --name nginx -p 8080:80 -d skiychan/nginx-php7
 ```
-You can then browse to http://<docker_host>:8080 to view the default install files.
+You can then browse to http://\<docker_host\>:8080 to view the default install files.
 
 ## Volumes
 If you want to link to your web site directory on the docker host to the container run:
@@ -36,5 +36,5 @@ skiychan/nginx-php7
 ```
 
 ## Author
-@autuor: Skiychan <dev@skiy.net>   
+@autuor: Skiychan <dev@skiy.net>      
 @link:   http://www.zzzzy.com
