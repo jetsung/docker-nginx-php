@@ -3,75 +3,137 @@ MAINTAINER Skiychan <dev@skiy.net>
 
 #Install system library
 RUN yum -y install \
-	  gcc \
-		gcc-c++ \
-		autoconf \
-		automake \
-		libtool \
-		make \
-		cmake
+gcc \
+gcc-c++ \
+autoconf \
+automake \
+libtool \
+make \
+cmake && \
+yum clean all
 
 #Install PHP library
 ## libmcrypt-devel DIY
 RUN rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm && \
-		yum install -y wget \
-		zlib \
-		zlib-devel \
-		openssl \
-		openssl-devel \
-		pcre-devel \
-		libxml2 \
-		libxml2-devel \
-		libcurl \
-		libcurl-devel \
-		libjpeg-devel \
-		libpng-devel \
-		freetype-devel \
-		libmcrypt-devel && \
-		yum clean all
+yum install -y wget \
+zlib \
+zlib-devel \
+openssl \
+openssl-devel \
+pcre-devel \
+libxml2 \
+libxml2-devel \
+libcurl \
+libcurl-devel \
+libjpeg-devel \
+libpng-devel \
+freetype-devel \
+libmcrypt-devel && \
+yum clean all
 
-#Download & Make install nginx
+#Add user
+RUN groupadd --system www && \
+useradd --system --gid www www -M
+
+#Download nginx & php
 RUN cd /home && \
- 		wget -c http://nginx.org/download/nginx-1.9.9.tar.gz && \
-		tar -zxvf nginx-1.9.9.tar.gz && \
-		cd nginx-1.9.9 && \
-./configure --prefix=/usr/local/nginx --pid-path=/var/run/nginx.pid --with-http_ssl_module --with-pcre --without-mail_pop3_module --without-mail_imap_module --without-mail_smtp_module && \
-		make && \
-		make install
+wget -c http://nginx.org/download/nginx-1.9.9.tar.gz && \
+wget -O php-7.0.0.tar.gz http://am1.php.net/get/php-7.0.0.tar.gz/from/this/mirror
+
+#Make install nginx
+RUN cd /home && \
+tar -zxvf nginx-1.9.9.tar.gz && \
+cd nginx-1.9.9 && \
+./configure --prefix=/usr/local/nginx \
+--user=www --group=www \
+--error-log-path=/var/log/nginx_error.log \
+--http-log-path=/var/log/nginx_access.log \
+--pid-path=/var/run/nginx.pid \
+--with-pcre \
+--with-http_ssl_module \
+--without-mail_pop3_module \
+--without-mail_imap_module \
+--with-http_gzip_static_module && \
+make && make install
 
 RUN cd /home && \
-    wget -O php-7.0.0.tar.gz http://am1.php.net/get/php-7.0.0.tar.gz/from/this/mirror && \
-		tar zvxf php-7.0.0.tar.gz && \
-		cd php-7.0.0 && \
-./configure --prefix=/usr/local/php7 --with-config-file-path=/usr/local/php7/etc --with-config-file-scan-dir=/usr/local/php7/etc/php.d --with-mcrypt=/usr/include --enable-mysqlnd --with-mysqli --with-pdo-mysql --enable-fpm --with-gd --with-iconv --with-zlib --enable-xml --enable-shmop --enable-sysvsem --enable-inline-optimization --enable-mbregex --enable-mbstring --enable-ftp --enable-gd-native-ttf --with-openssl --enable-pcntl --enable-sockets --with-xmlrpc --enable-zip --enable-soap --without-pear --with-gettext --enable-session --with-curl --with-jpeg-dir --with-freetype-dir --enable-opcache && \
-		make && \
-		make install && \
-		cp php.ini-production /usr/local/php7/etc/php.ini && \
-		cp /usr/local/php7/etc/php-fpm.conf.default /usr/local/php7/etc/php-fpm.conf && \
-		cp /usr/local/php7/etc/php-fpm.d/www.conf.default /usr/local/php7/etc/php-fpm.d/www.conf
+tar zvxf php-7.0.0.tar.gz && \
+cd php-7.0.0 && \
+./configure --prefix=/usr/local/php7 \
+--with-config-file-path=/usr/local/php7/etc \
+--with-config-file-scan-dir=/usr/local/php7/etc/php.d \
+--with-fpm-user=www \
+--with-fpm-group=www \
+--with-mcrypt=/usr/include \
+--with-mysqli \
+--with-pdo-mysql \
+--with-openssl \
+--with-gd \
+--with-iconv \
+--with-zlib \
+--with-gettext \
+--with-curl \
+--with-png-dir \
+--with-jpeg-dir \
+--with-freetype-dir \
+--with-xmlrpc \
+--with-mhash \
+--enable-fpm \
+--enable-xml \
+--enable-shmop \
+--enable-sysvsem \
+--enable-inline-optimization \
+--enable-mbregex \
+--enable-mbstring \
+--enable-ftp \
+--enable-gd-native-ttf \
+--enable-mysqlnd \
+--enable-pcntl \
+--enable-sockets \
+--enable-zip \
+--enable-soap \
+--enable-session \
+--enable-opcache \
+--enable-bcmath \
+--enable-exif \
+--disable-fileinfo \
+--disable-rpath \
+--disable-ipv6 \
+--disable-debug \
+--without-pear && \
+make && make install
+
+RUN	cd /home/php-7.0.0/ && \
+cp php.ini-production /usr/local/php7/etc/php.ini && \
+cp /usr/local/php7/etc/php-fpm.conf.default /usr/local/php7/etc/php-fpm.conf && \
+cp /usr/local/php7/etc/php-fpm.d/www.conf.default /usr/local/php7/etc/php-fpm.d/www.conf && \
+cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm && \
+chmod +x /etc/init.d/php-fpm && \
+chkconfig --add php-fpm && \
+chkconfig php-fpm on
 
 #Remove zips
-#RUN cd / && rm -rf /home/*
+#RUN cd / && rm -rf /home/{php-7.0.0*}
 
 #Create web folder
-RUN mkdir -p /data/www
-VOLUME ["/data/www"]
-ADD index.php /data/www/index.php
+#RUN mkdir -p /data/www
 #RUN chown -Rf www-data.www-data /data/www
+VOLUME ["/data/www", "/usr/local/nginx/conf/ssl", "/usr/local/nginx/conf/vhost"]
+ADD index.php /data/www/index.php
 
 #Update nginx config
 ADD nginx.conf /usr/local/nginx/conf/nginx.conf
-#RUN sed -i -e"s/worker_processes  1/worker_processes 5/" /usr/local/nginx/conf/nginx.conf && \
-#sed -i -e"s/keepalive_timeout\s*65/keepalive_timeout 2/" /usr/local/nginx/conf/nginx.conf && \
-#sed -i -e"s/keepalive_timeout 2/keepalive_timeout 2;\n\tclient_max_body_size 100m/" /usr/local/nginx/conf/nginx.conf && \
-#echo "daemon off;" >> /usr/local/nginx/conf/nginx.conf
 
 #Start
 ADD start.sh /start.sh
 RUN chmod +x /start.sh
 
 #Set port
-EXPOSE 80
+EXPOSE 80 443
+
+ENTRYPOINT ["/start.sh"]
 
 #Start web server
-CMD ["/bin/bash", "/start.sh"]
+#CMD ["/bin/bash", "/start.sh"]
+
+CMD ["nginx"]
