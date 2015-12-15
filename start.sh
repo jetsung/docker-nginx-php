@@ -6,15 +6,10 @@
 # Version:
 # Created Time: 2015/12/13
 #########################################################################
-PATH=/bin:/usr/local/nginx/sbin:/usr/local/php7/sbin:$PATH
 Nginx_Install_Dir=/usr/local/nginx
 DATA_DIR=/data/www
 
 set -e
-
-if [ "${1:0:1}" = '-' ]; then
-        set -- nginx "$@"
-fi
 
 chown -R www.www $DATA_DIR
 
@@ -77,4 +72,4 @@ server {
 EOF
 fi
 
-#exec "$@" -g "daemon off;"
+/usr/bin/supervisord -n -c /etc/supervisord.conf

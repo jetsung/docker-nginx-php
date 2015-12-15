@@ -2,8 +2,8 @@ FROM centos:7
 MAINTAINER Skiychan <dev@skiy.net>
 
 #Install system library
-RUN yum -y install \
-    gcc \
+#RUN yum update -y
+RUN yum install -y gcc \
     gcc-c++ \
     autoconf \
     automake \
@@ -25,10 +25,12 @@ RUN rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch
     libxml2-devel \
     libcurl \
     libcurl-devel \
-    libjpeg-devel \
     libpng-devel \
+    libjpeg-devel \
     freetype-devel \
-    libmcrypt-devel && \
+    libmcrypt-devel \
+    openssh-server \
+    python-setuptools && \
     yum clean all
 
 #Add user
@@ -107,10 +109,19 @@ RUN cd /home && \
 RUN	cd /home/php-7.0.0/ && \
     cp php.ini-production /usr/local/php7/etc/php.ini && \
     cp /usr/local/php7/etc/php-fpm.conf.default /usr/local/php7/etc/php-fpm.conf && \
-    cp /usr/local/php7/etc/php-fpm.d/www.conf.default /usr/local/php7/etc/php-fpm.d/www.conf && \
+    cp /usr/local/php7/etc/php-fpm.d/www.conf.default /usr/local/php7/etc/php-fpm.d/www.conf
+
+#Install supervisor
+RUN easy_install supervisor && \
+    mkdir -p /var/log/supervisor && \
+    mkdir -p /var/run/sshd && \
+    mkdir -p /var/run/supervisord
+
+#Add supervisord conf
+ADD supervisord.conf /etc/supervisord.conf
 
 #Remove zips
-#RUN cd / && rm -rf /home/{php-7.0.0*}
+RUN cd / && rm -rf php-* nginx-*
 
 #Create web folder
 VOLUME ["/data/www", "/usr/local/nginx/conf/ssl", "/usr/local/nginx/conf/vhost"]
@@ -130,5 +141,3 @@ EXPOSE 80 443
 
 #Start web server
 CMD ["/bin/bash", "/start.sh"]
-
-#CMD ["nginx", "php-fpm"]
