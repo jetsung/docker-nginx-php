@@ -6,7 +6,7 @@
 # Version:
 # Created Time: 2015/12/13
 #########################################################################
-PATH=/bin:/usr/local/nginx/sbin:$PATH
+PATH=/bin:/usr/local/nginx/sbin:/usr/local/php7/sbin:$PATH
 Nginx_Install_Dir=/usr/local/nginx
 DATA_DIR=/data/www
 
@@ -14,12 +14,6 @@ set -e
 
 if [ "${1:0:1}" = '-' ]; then
         set -- nginx "$@"
-fi
-
-if [[ -h /var/lock ]]; then
-    rm -rf /var/lock
-    [ -f /var/lock/subsys ] || mkdir -p /var/lock/subsys
-    #touch /var/lock/subsys/nginx
 fi
 
 chown -R www.www $DATA_DIR
@@ -82,12 +76,5 @@ server {
 }
 EOF
 fi
-
-#/usr/local/php7/sbin/php-fpm
-#/usr/local/nginx/sbin/nginx
-
-/etc/init.d/php-fpm start
-
-/etc/init.d/nginx start
 
 #exec "$@" -g "daemon off;"

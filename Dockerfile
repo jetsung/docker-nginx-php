@@ -31,12 +31,6 @@ RUN rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch
     libmcrypt-devel && \
     yum clean all
 
-#Add init.d files
-ADD init.d/* /etc/init.d/
-#ADD functions /etc/init.d/functions
-#ADD network /etc/init.d/network
-#ADD nginx /etc/init.d/nginx
-
 #Add user
 RUN groupadd -r www && \
     useradd -M -s /sbin/nologin -r -g www www
@@ -55,18 +49,12 @@ RUN cd /home && \
     --error-log-path=/var/log/nginx_error.log \
     --http-log-path=/var/log/nginx_access.log \
     --pid-path=/var/run/nginx.pid \
-    --lock-path=/var/lock/subsys/nginx \
     --with-pcre \
     --with-http_ssl_module \
     --without-mail_pop3_module \
     --without-mail_imap_module \
     --with-http_gzip_static_module && \
     make && make install
-
-#Add nginx.service
-RUN chmod +x /etc/init.d/nginx && \
-    chkconfig --add nginx && \
-    chkconfig nginx on
 
 #Make install php
 RUN cd /home && \
@@ -120,17 +108,11 @@ RUN	cd /home/php-7.0.0/ && \
     cp php.ini-production /usr/local/php7/etc/php.ini && \
     cp /usr/local/php7/etc/php-fpm.conf.default /usr/local/php7/etc/php-fpm.conf && \
     cp /usr/local/php7/etc/php-fpm.d/www.conf.default /usr/local/php7/etc/php-fpm.d/www.conf && \
-    cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm && \
-    chmod +x /etc/init.d/php-fpm && \
-    chkconfig --add php-fpm && \
-    chkconfig php-fpm on
 
 #Remove zips
 #RUN cd / && rm -rf /home/{php-7.0.0*}
 
 #Create web folder
-#RUN mkdir -p /data/www
-#RUN chown -Rf www-data.www-data /data/www
 VOLUME ["/data/www", "/usr/local/nginx/conf/ssl", "/usr/local/nginx/conf/vhost"]
 ADD index.php /data/www/index.php
 
@@ -149,4 +131,4 @@ EXPOSE 80 443
 #Start web server
 CMD ["/bin/bash", "/start.sh"]
 
-#CMD ["nginx"]
+#CMD ["nginx", "php-fpm"]
