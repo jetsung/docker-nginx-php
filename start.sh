@@ -16,7 +16,7 @@ if [ "${1:0:1}" = '-' ]; then
         set -- nginx "$@"
 fi
 
-if [[ -e /var/lock ]]; then
+if [[ -h /var/lock ]]; then
     rm -rf /var/lock
     [ -f /var/lock/subsys ] || mkdir -p /var/lock/subsys
     #touch /var/lock/subsys/nginx
@@ -85,8 +85,9 @@ fi
 
 #/usr/local/php7/sbin/php-fpm
 #/usr/local/nginx/sbin/nginx
-#exec "$@" -g "daemon off;"
 
 /etc/init.d/php-fpm start
 
-/usr/local/nginx/sbin/nginx
+/etc/init.d/nginx start
+
+#exec "$@" -g "daemon off;"

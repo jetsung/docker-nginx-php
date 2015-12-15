@@ -34,7 +34,7 @@ start(){
                 exit 1
         fi
         echo -n $"Starting $prog:"
-        daemon $nginxd -c ${nginx_config}
+        #daemon $nginxd -c ${nginx_config}
         RETVAL=$?
         echo
         [ $RETVAL = 0 ] && touch /var/lock/subsys/nginx

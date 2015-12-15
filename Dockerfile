@@ -31,6 +31,12 @@ RUN rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch
     libmcrypt-devel && \
     yum clean all
 
+#Add init.d files
+ADD init.d/* /etc/init.d/
+#ADD functions /etc/init.d/functions
+#ADD network /etc/init.d/network
+#ADD nginx /etc/init.d/nginx
+
 #Add user
 RUN groupadd -r www && \
     useradd -M -s /sbin/nologin -r -g www www
@@ -58,7 +64,6 @@ RUN cd /home && \
     make && make install
 
 #Add nginx.service
-ADD nginx /etc/init.d/nginx
 RUN chmod +x /etc/init.d/nginx && \
     chkconfig --add nginx && \
     chkconfig nginx on
