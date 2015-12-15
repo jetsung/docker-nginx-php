@@ -16,6 +16,12 @@ if [ "${1:0:1}" = '-' ]; then
         set -- nginx "$@"
 fi
 
+if [[ -e /var/lock ]]; then
+    rm -rf /var/lock
+    [ -f /var/lock/subsys ] || mkdir -p /var/lock/subsys
+    #touch /var/lock/subsys/nginx
+fi
+
 chown -R www.www $DATA_DIR
 
 if [[ -n "$PROXY_WEB" ]]; then
@@ -60,7 +66,7 @@ server {
     return 301 https://$PROXY_DOMAIN\$request_uri;
     }
 
-    server {
+server {
     listen 443 ssl;
     server_name $PROXY_DOMAIN;
 
@@ -73,18 +79,14 @@ server {
     keepalive_timeout 70;
     ssl_session_cache shared:SSL:10m;
     ssl_session_timeout 10m;
-
-    resolver 8.8.8.8;
-    location / {
-            google on;
-            google_scholar on;
-            google_language zh-CN;
-            google_robots_allow on;
-    }
 }
 EOF
 fi
 
 #/usr/local/php7/sbin/php-fpm
 #/usr/local/nginx/sbin/nginx
-exec "$@" -g "daemon off;"
+#exec "$@" -g "daemon off;"
+
+/etc/init.d/php-fpm start
+
+/usr/local/nginx/sbin/nginx
