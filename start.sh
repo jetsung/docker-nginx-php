@@ -36,13 +36,13 @@ if [[ -n "$PROXY_WEB" ]]; then
              exit 1
      fi
 
-     if [ -f "${Nginx_Install_Dir}/conf/ssl/${PROXY_CRT}" ]; then
+     if [ ! -f "${Nginx_Install_Dir}/conf/ssl/${PROXY_CRT}" ]; then
              echo >&2 'error:  missing PROXY_CRT'
              echo >&2 "  You need to put ${PROXY_CRT} in ssl directory"
              exit 1
      fi
 
-     if [ -f "${Nginx_Install_Dir}/conf/ssl/${PROXY_KEY}" ]; then
+     if [ ! -f "${Nginx_Install_Dir}/conf/ssl/${PROXY_KEY}" ]; then
              echo >&2 'error:  missing PROXY_CSR'
              echo >&2 "  You need to put ${PROXY_KEY} in ssl directory"
              exit 1
@@ -68,6 +68,17 @@ server {
     keepalive_timeout 70;
     ssl_session_cache shared:SSL:10m;
     ssl_session_timeout 10m;
+
+    root   $DATA_DIR;
+    index  index.php index.html index.htm;
+
+    location ~ \.php$ {
+        root           /data/www;
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  /\$document_root\$fastcgi_script_name;
+        include        fastcgi_params;
+    }
 }
 EOF
 fi
