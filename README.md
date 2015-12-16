@@ -10,6 +10,11 @@ Pull the image from the docker index rather than downloading the git repo. This 
 docker pull skiychan/nginx-php7:latest
 ```
 
+To pull the Nightly Version:   
+```
+docker pull skiychan/nginx-php7:nightly
+```
+
 ## Running
 To simply run the container:
 ```sh
