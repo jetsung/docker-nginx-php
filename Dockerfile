@@ -1,6 +1,9 @@
 FROM centos:7
 MAINTAINER Skiychan <dev@skiy.net>
-
+##
+# Nginx: 1.9.9
+# PHP  : 7.0.1
+##
 #Install system library
 #RUN yum update -y
 RUN yum install -y gcc \
@@ -39,12 +42,12 @@ RUN groupadd -r www && \
 
 #Download nginx & php
 RUN cd /home && \
-    wget -c http://nginx.org/download/nginx-1.9.9.tar.gz && \
-    wget -O php-7.0.0.tar.gz http://am1.php.net/get/php-7.0.0.tar.gz/from/this/mirror
+    wget -c -O nginx.tar.gz http://nginx.org/download/nginx-1.9.9.tar.gz && \
+    wget -O php.tar.gz http://am1.php.net/get/php-7.0.1.tar.gz/from/this/mirror
 
 #Make install nginx
 RUN cd /home && \
-    tar -zxvf nginx-1.9.9.tar.gz && \
+    tar -zxvf nginx.tar.gz && \
     cd nginx-1.9.9 && \
     ./configure --prefix=/usr/local/nginx \
     --user=www --group=www \
@@ -60,8 +63,8 @@ RUN cd /home && \
 
 #Make install php
 RUN cd /home && \
-    tar zvxf php-7.0.0.tar.gz && \
-    cd php-7.0.0 && \
+    tar zvxf php.tar.gz && \
+    cd php-7.0.1 && \
     ./configure --prefix=/usr/local/php7 \
     --with-config-file-path=/usr/local/php7/etc \
     --with-config-file-scan-dir=/usr/local/php7/etc/php.d \
@@ -106,7 +109,7 @@ RUN cd /home && \
     --without-pear && \
     make && make install
 
-RUN	cd /home/php-7.0.0/ && \
+RUN	cd /home/php-7.0.1/ && \
     cp php.ini-production /usr/local/php7/etc/php.ini && \
     cp /usr/local/php7/etc/php-fpm.conf.default /usr/local/php7/etc/php-fpm.conf && \
     cp /usr/local/php7/etc/php-fpm.d/www.conf.default /usr/local/php7/etc/php-fpm.d/www.conf

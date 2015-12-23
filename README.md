@@ -2,12 +2,17 @@ Nginx and PHP for Docker
 
 ## Version
 nginx: **1.9.9**   
-php:   **7.0.0**
+php:   **7.0.1**
 
 ## Installation
 Pull the image from the docker index rather than downloading the git repo. This prevents you having to build the image on every docker host.
 ```sh
 docker pull skiychan/nginx-php7:latest
+```
+
+To pull the Nightly Version:   
+```
+docker pull skiychan/nginx-php7:nightly
 ```
 
 ## Running
@@ -36,5 +41,6 @@ skiychan/nginx-php7
 ```
 
 ## Author
-@autuor: Skiychan <dev@skiy.net>      
-@link:   http://www.zzzzy.com
+Author: Skiychan    
+Email:  dev@skiy.net       
+Link:   http://www.zzzzy.com
