@@ -41,12 +41,12 @@ RUN groupadd -r www && \
     useradd -M -s /sbin/nologin -r -g www www
 
 #Download nginx & php
-RUN cd /home && \
+RUN mkdir -p /home/nginx-php && cd $_ && \
     wget -c -O nginx.tar.gz http://nginx.org/download/nginx-1.9.9.tar.gz && \
     wget -O php.tar.gz http://am1.php.net/get/php-7.0.1.tar.gz/from/this/mirror
 
 #Make install nginx
-RUN cd /home && \
+RUN cd /home/nginx-php && \
     tar -zxvf nginx.tar.gz && \
     cd nginx-1.9.9 && \
     ./configure --prefix=/usr/local/nginx \
@@ -62,7 +62,7 @@ RUN cd /home && \
     make && make install
 
 #Make install php
-RUN cd /home && \
+RUN cd /home/nginx-php && \
     tar zvxf php.tar.gz && \
     cd php-7.0.1 && \
     ./configure --prefix=/usr/local/php7 \
@@ -109,7 +109,7 @@ RUN cd /home && \
     --without-pear && \
     make && make install
 
-RUN	cd /home/php-7.0.1/ && \
+RUN	cd /home/nginx-php/php-7.0.1 && \
     cp php.ini-production /usr/local/php7/etc/php.ini && \
     cp /usr/local/php7/etc/php-fpm.conf.default /usr/local/php7/etc/php-fpm.conf && \
     cp /usr/local/php7/etc/php-fpm.d/www.conf.default /usr/local/php7/etc/php-fpm.d/www.conf
@@ -124,7 +124,7 @@ RUN easy_install supervisor && \
 ADD supervisord.conf /etc/supervisord.conf
 
 #Remove zips
-RUN cd / && rm -rf php-* nginx-*
+RUN cd / && rm -rf /home/nginx-php
 
 #Create web folder
 VOLUME ["/data/www", "/usr/local/nginx/conf/ssl", "/usr/local/nginx/conf/vhost"]
