@@ -46,7 +46,8 @@ docker run --name nginx -p 8080:80 -d -v /your_php_extension:/usr/local/php/etc/
 ```
 
 ## ChangeLog   
-**2016.01.25** ADD XDEBUG
+**2016.01.25**    
+Add xdebug support
 
 ## Author
 Author: Skiychan    
