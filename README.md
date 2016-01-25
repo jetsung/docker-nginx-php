@@ -40,6 +40,14 @@ docker run -d --name=nginx \
 skiychan/nginx-php7
 ```
 
+## Enabling Extensions
+```sh
+docker run --name nginx -p 8080:80 -d -v /your_php_extension:/usr/local/php/etc/php.d skiychan/nginx-php7
+```
+
+## ChangeLog   
+**2016.01.25** ADD XDEBUG
+
 ## Author
 Author: Skiychan    
 Email:  dev@skiy.net       
