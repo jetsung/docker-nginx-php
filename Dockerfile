@@ -1,7 +1,7 @@
 FROM centos:7
 MAINTAINER Skiychan <dev@skiy.net>
 ##
-# Nginx: 1.9.9
+# Nginx: 1.9.10
 # PHP  : 7.0.2
 ##
 #Install system library
@@ -42,7 +42,7 @@ RUN groupadd -r www && \
 
 
 ENV PHP_VERSION 7.0.2
-ENV NGINX_VERSION 1.9.9    
+ENV NGINX_VERSION 1.9.10    
 
 #Download nginx & php
 RUN mkdir -p /home/nginx-php && cd $_ && \
