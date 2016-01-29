@@ -107,9 +107,9 @@ RUN cd /home/nginx-php && \
     --enable-opcache \
     --enable-bcmath \
     --enable-exif \
-    --disable-fileinfo \
+    --enable-fileinfo \
     --disable-rpath \
-    --disable-ipv6 \
+    --enable-ipv6 \
     --disable-debug \
     --without-pear && \
     make && make install
@@ -156,5 +156,8 @@ RUN chmod +x /start.sh
 #Set port
 EXPOSE 80 443 9000
 
+#Start it
+ENTRYPOINT ["/start.sh"]
+
 #Start web server
-CMD ["/bin/bash", "/start.sh"]
+#CMD ["/bin/bash", "/start.sh"]
