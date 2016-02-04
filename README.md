@@ -45,16 +45,20 @@ skiychan/nginx-php7
 docker run --name nginx -p 8080:80 -d -v /your_php_extension:/usr/local/php/etc/php.d skiychan/nginx-php7
 ```
 
-## ChangeLog   
-**2016.01.25:**    
-Add xdebug support
-   
-**2016.01.27:**     
-Update nginx to version 1.9.10
+## ChangeLog
+**2016/02/04:**      
+Update php to version 7.0.3   
 
-**2016.01.29:**     
+**2016/01/29:**     
 Add fileinfo support   
-Add ipv6 support
+Add ipv6 support   
+
+**2016/01/27:**     
+Update nginx to version 1.9.10
+  
+**2016/01/25:**    
+Add xdebug support
+  
 
 ## Author
 Author: Skiychan    
