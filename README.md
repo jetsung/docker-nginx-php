@@ -1,7 +1,7 @@
 Nginx and PHP for Docker
 
 ## Version
-nginx: **1.9.10**   
+nginx: **1.9.11**   
 php:   **7.0.3**
 
 ## Installation
@@ -46,6 +46,9 @@ docker run --name nginx -p 8080:80 -d -v /your_php_extension:/usr/local/php/etc/
 ```
 
 ## ChangeLog
+**2016 / 02 / 13:**     
+Update nginx to version 1.9.11
+
 **2016 / 02 / 04:**      
 Update php to version 7.0.3   
 
