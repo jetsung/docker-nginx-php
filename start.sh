@@ -64,7 +64,7 @@ server {
     ssl_certificate_key ssl/${PROXY_KEY};
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
     ssl_prefer_server_ciphers on;
-    ssl_ciphers ALL:!aNULL:!ADH:!eNULL:!LOW:!EXP:RC4+RSA:+HIGH:+MEDIUM;
+    ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
     keepalive_timeout 70;
     ssl_session_cache shared:SSL:10m;
     ssl_session_timeout 10m;
