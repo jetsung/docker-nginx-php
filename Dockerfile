@@ -2,12 +2,12 @@ FROM centos:7
 MAINTAINER Skiychan <dev@skiy.net>
 ##
 # Nginx: 1.9.12
-# PHP  : 7.0.4
+# PHP  : 7.0.5
 ##
 #Install system library
 #RUN yum update -y
 
-ENV PHP_VERSION 7.0.4
+ENV PHP_VERSION 7.0.5
 ENV NGINX_VERSION 1.9.12
 
 RUN yum install -y gcc \
@@ -42,7 +42,7 @@ RUN rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch
 
 #Add user
 RUN groupadd -r www && \
-    useradd -M -s /sbin/nologin -r -g www www    
+    useradd -M -s /sbin/nologin -r -g www www
 
 #Download nginx & php
 RUN mkdir -p /home/nginx-php && cd $_ && \
