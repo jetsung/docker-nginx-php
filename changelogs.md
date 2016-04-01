@@ -1,5 +1,7 @@
-**2016 / 03 / 31:**     
-Update php to version 7.0.5
+**2016 / 04 / 01:**     
+Update php to version 7.0.5   
+Update nginx to version 1.9.13
+Update xdebug info
 
 **2016 / 03 / 04:**     
 Update php to version 7.0.4
