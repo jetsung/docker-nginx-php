@@ -1,3 +1,8 @@
+**2016 / 04 / 01:**     
+Update php to version 7.0.5   
+Update nginx to version 1.9.13
+Update xdebug info
+
 **2016 / 03 / 04:**     
 Update php to version 7.0.4
 
@@ -16,6 +21,6 @@ Add ipv6 support
 
 **2016 / 01 / 27:**     
 Update nginx to version 1.9.10
-  
+
 **2016 / 01 / 25:**    
 Add xdebug support
