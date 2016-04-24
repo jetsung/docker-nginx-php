@@ -1,7 +1,7 @@
 Nginx and PHP for Docker
 
 ## Last Version
-nginx: **1.9.14**   
+nginx: **1.9.15**   
 php:   **7.0.5**
 
 ## Installation
