@@ -1,5 +1,5 @@
 **2016 / 04 / 27:**      
-Update nginx to version 1.10  
+Update nginx to version 1.10.0  
 Fix xdebug port to 9999
 
 **2016 / 04 / 20:**      

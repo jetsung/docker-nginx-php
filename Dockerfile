@@ -1,13 +1,13 @@
 FROM centos:7
 MAINTAINER Skiychan <dev@skiy.net>
 ##
-# Nginx: 1.10
+# Nginx: 1.10.0
 # PHP  : 7.0.5
 ##
 #Install system library
 #RUN yum update -y
 
-ENV NGINX_VERSION 1.10
+ENV NGINX_VERSION 1.10.0
 ENV PHP_VERSION 7.0.5
 
 RUN yum install -y gcc \
