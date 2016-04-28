@@ -1,14 +1,14 @@
 FROM centos:7
 MAINTAINER Skiychan <dev@skiy.net>
 ##
-# Nginx: 1.9.15
+# Nginx: 1.10.0
 # PHP  : 7.0.5
 ##
 #Install system library
 #RUN yum update -y
 
+ENV NGINX_VERSION 1.10.0
 ENV PHP_VERSION 7.0.5
-ENV NGINX_VERSION 1.9.15
 
 RUN yum install -y gcc \
     gcc-c++ \
@@ -121,9 +121,9 @@ RUN cd /home/nginx-php && \
     /usr/local/php/bin/phpize && \
     ./configure --enable-xdebug --with-php-config=/usr/local/php/bin/php-config && \
     make && \
-    cp modules/xdebug.so /usr/local/php/lib/php/extensions/xdebug.so
+    cp modules/xdebug.so /usr/local/php/lib/php/extensions/no-debug-non-zts-20151012/
 
-RUN	cd /home/nginx-php/php-$PHP_VERSION && \
+RUN cd /home/nginx-php/php-$PHP_VERSION && \
     cp php.ini-production /usr/local/php/etc/php.ini && \
     cp /usr/local/php/etc/php-fpm.conf.default /usr/local/php/etc/php-fpm.conf && \
     cp /usr/local/php/etc/php-fpm.d/www.conf.default /usr/local/php/etc/php-fpm.d/www.conf
@@ -154,7 +154,7 @@ ADD start.sh /start.sh
 RUN chmod +x /start.sh
 
 #Set port
-EXPOSE 80 443 9000
+EXPOSE 80 443 9999
 
 #Start it
 ENTRYPOINT ["/start.sh"]
