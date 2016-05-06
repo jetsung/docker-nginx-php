@@ -1,3 +1,7 @@
+**2016 / 05 / 06:**   
+fixbug php-fpm repeated start   
+update xdebug port to 9001
+
 **2016 / 04 / 28:**      
 upgrade php to version 7.0.6   
 
