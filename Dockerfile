@@ -1,14 +1,8 @@
 FROM centos:7
 MAINTAINER Skiychan <dev@skiy.net>
-##
-# Nginx: 1.10.0
-# PHP  : 7.0.6
-##
-#Install system library
-#RUN yum update -y
 
-ENV NGINX_VERSION 1.10.0
-ENV PHP_VERSION 7.0.6
+ENV NGINX_VERSION 1.11.0
+ENV PHP_VERSION 7.0.7
 
 RUN yum install -y gcc \
     gcc-c++ \
@@ -142,6 +136,7 @@ RUN cd / && rm -rf /home/nginx-php
 
 #Create web folder
 VOLUME ["/data/www", "/usr/local/nginx/conf/ssl", "/usr/local/nginx/conf/vhost", "/usr/local/php/etc/php.d"]
+RUN chmod -R www:www /data/www
 ADD index.php /data/www/index.php
 
 ADD xdebug.ini /usr/local/php/etc/php.d/xdebug.ini
@@ -154,7 +149,7 @@ ADD start.sh /start.sh
 RUN chmod +x /start.sh
 
 #Set port
-EXPOSE 80 443 9001
+EXPOSE 80 443
 
 #Start it
 ENTRYPOINT ["/start.sh"]

@@ -1,3 +1,8 @@
+**2016 / 05 / 26:**     
+remove xdebug port   
+upgrade php to version 7.0.7   
+upgrade nginx to version 1.11.0   
+
 **2016 / 05 / 06:**   
 fixbug php-fpm repeated start   
 update xdebug port to 9001
