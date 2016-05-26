@@ -136,7 +136,7 @@ RUN cd / && rm -rf /home/nginx-php
 
 #Create web folder
 VOLUME ["/data/www", "/usr/local/nginx/conf/ssl", "/usr/local/nginx/conf/vhost", "/usr/local/php/etc/php.d"]
-RUN chmod -R www:www /data/www
+RUN chown -R www:www /data/www
 ADD index.php /data/www/index.php
 
 ADD xdebug.ini /usr/local/php/etc/php.d/xdebug.ini
