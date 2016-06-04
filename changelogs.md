@@ -1,3 +1,6 @@
+**2016 / 06 / 02:**     
+upgrade nginx to version 1.11.1   
+
 **2016 / 05 / 26:**     
 remove xdebug port   
 upgrade php to version 7.0.7   
