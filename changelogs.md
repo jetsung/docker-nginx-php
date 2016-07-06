@@ -1,3 +1,6 @@
+**2016 / 07 / 5:**     
+upgrade nginx to version 1.11.2   
+
 **2016 / 06 / 23:**     
 upgrade php to version 7.0.8   
 
