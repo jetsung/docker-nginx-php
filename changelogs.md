@@ -1,3 +1,6 @@
+**2016 / 08 / 03:**     
+add diy extension support
+
 **2016 / 08 / 02:**     
 upgrade nginx to version 1.11.3
 
