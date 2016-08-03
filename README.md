@@ -44,12 +44,15 @@ skiychan/nginx-php7
 ```
 
 ## Enabling Extensions
+Add xxx.so and xxx.ini to folder ```/your_php_extension_files```, then run the command:   
 ```sh
 docker run --name nginx \
 -p 8080:80 -d \
--v /your_php_extension_ini:/usr/local/php/etc/php.d \
+-v /your_php_extension_files:/usr/local/php/etc/php.d \
 skiychan/nginx-php7
 ```
+
+You can see the **[wiki](https://github.com/skiy-dockerfile/nginx-php7/wiki/Question-&-Answer)**
 
 ## [ChangeLog](changelogs.md)
   
@@ -57,4 +60,4 @@ skiychan/nginx-php7
 ## Author
 Author: Skiychan    
 Email:  dev@skiy.net       
-Link:   https://www.zzzzy.com
+Link:   https://www.skiy.net
