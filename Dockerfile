@@ -42,7 +42,6 @@ RUN groupadd -r www && \
 RUN mkdir -p /home/nginx-php && cd $_ && \
     wget -c -O nginx.tar.gz http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz && \
     wget -O php.tar.gz http://php.net/distributions/php-$PHP_VERSION.tar.gz && \
-    curl -O -SL https://github.com/xdebug/xdebug/archive/XDEBUG_2_4_0RC3.tar.gz
 
 #Make install nginx
 RUN cd /home/nginx-php && \
@@ -108,15 +107,8 @@ RUN cd /home/nginx-php && \
     --without-pear && \
     make && make install
 
-#Add xdebug extension
-RUN cd /home/nginx-php && \
-    tar -zxvf XDEBUG_2_4_0RC3.tar.gz && \
-    cd xdebug-XDEBUG_2_4_0RC3 && \
-    /usr/local/php/bin/phpize && \
-    ./configure --enable-xdebug --with-php-config=/usr/local/php/bin/php-config && \
-    make && \
-    cp modules/xdebug.so /usr/local/php/lib/php/extensions/no-debug-non-zts-20151012/
 
+#Install php-fpm
 RUN cd /home/nginx-php/php-$PHP_VERSION && \
     cp php.ini-production /usr/local/php/etc/php.ini && \
     cp /usr/local/php/etc/php-fpm.conf.default /usr/local/php/etc/php-fpm.conf && \
@@ -129,7 +121,7 @@ RUN easy_install supervisor && \
     mkdir -p /var/run/supervisord
 
 #Add supervisord conf
-ADD supervisord.conf /etc/supervisord.conf
+ADD supervisord.conf /etc/
 
 #Remove zips
 RUN cd / && rm -rf /home/nginx-php
@@ -137,15 +129,15 @@ RUN cd / && rm -rf /home/nginx-php
 #Create web folder
 VOLUME ["/data/www", "/usr/local/nginx/conf/ssl", "/usr/local/nginx/conf/vhost", "/usr/local/php/etc/php.d"]
 RUN chown -R www:www /data/www
-ADD index.php /data/www/index.php
+ADD index.php /data/www/
 
-ADD xdebug.ini /usr/local/php/etc/php.d/xdebug.ini
+ADD ext/ /usr/local/php/etc/php.d/
 
 #Update nginx config
-ADD nginx.conf /usr/local/nginx/conf/nginx.conf
+ADD nginx.conf /usr/local/nginx/conf/
 
 #Start
-ADD start.sh /start.sh
+ADD start.sh /
 RUN chmod +x /start.sh
 
 #Set port
