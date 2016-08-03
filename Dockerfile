@@ -41,7 +41,7 @@ RUN groupadd -r www && \
 #Download nginx & php
 RUN mkdir -p /home/nginx-php && cd $_ && \
     wget -c -O nginx.tar.gz http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz && \
-    wget -O php.tar.gz http://php.net/distributions/php-$PHP_VERSION.tar.gz && \
+    wget -O php.tar.gz http://php.net/distributions/php-$PHP_VERSION.tar.gz
 
 #Make install nginx
 RUN cd /home/nginx-php && \
