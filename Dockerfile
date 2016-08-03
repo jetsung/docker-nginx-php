@@ -137,7 +137,7 @@ ADD ext/ /usr/local/php/etc/php.d/
 ADD nginx.conf /usr/local/nginx/conf/
 
 #Start
-ADD start.sh /
+ADD files/ /
 RUN chmod +x /start.sh
 
 #Set port

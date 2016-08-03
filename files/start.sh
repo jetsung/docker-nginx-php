@@ -6,6 +6,10 @@
 # Version:
 # Created Time: 2015/12/13
 #########################################################################
+
+# Add PHP Extension
+sh /extension.sh
+
 Nginx_Install_Dir=/usr/local/nginx
 DATA_DIR=/data/www
 

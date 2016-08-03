@@ -7,9 +7,10 @@
 # Created Time: 2016/08/03
 #########################################################################
 
-RUN mkdir -p /home/extension && cd $_ 
+RUN mkdir -p /home/extension 
 
-#Add xdebug extension
+#Add extension xdebug
+cd /home/extension && \
 curl -O -SL https://github.com/xdebug/xdebug/archive/XDEBUG_2_4_0RC3.tar.gz && \
 tar -zxvf XDEBUG_2_4_0RC3.tar.gz && \
 cd xdebug-XDEBUG_2_4_0RC3 && \

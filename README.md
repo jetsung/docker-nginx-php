@@ -45,7 +45,10 @@ skiychan/nginx-php7
 
 ## Enabling Extensions
 ```sh
-docker run --name nginx -p 8080:80 -d -v /your_php_extension:/usr/local/php/etc/php.d skiychan/nginx-php7
+docker run --name nginx \
+-p 8080:80 -d \
+-v /your_php_extension_ini:/usr/local/php/etc/php.d \
+skiychan/nginx-php7
 ```
 
 ## [ChangeLog](changelogs.md)
