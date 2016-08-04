@@ -1,5 +1,7 @@
 **2016 / 08 / 03:**     
 add diy extension support
+add mongodb support
+clean the cache files, the mirror less 500M now.
 
 **2016 / 08 / 02:**     
 upgrade nginx to version 1.11.3
