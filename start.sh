@@ -8,7 +8,9 @@
 #########################################################################
 
 # Add PHP Extension
-sh /extension.sh
+if [ -f "/data/phpext/extension.sh" ]; then
+    sh /data/phpext/extension.sh
+fi
 
 Nginx_Install_Dir=/usr/local/nginx
 DATA_DIR=/data/www
