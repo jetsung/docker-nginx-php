@@ -43,15 +43,40 @@ docker run -d --name=nginx \
 skiychan/nginx-php7
 ```
 
-## Enabling Extensions
+## Enabling Extensions With *.so
+Add xxx.ini to folder ```/your_php_extension_ini``` and add xxx.so to folder ```/your_php_extension_file```, then run the command:   
 ```sh
-docker run --name nginx -p 8080:80 -d -v /your_php_extension:/usr/local/php/etc/php.d skiychan/nginx-php7
+docker run --name nginx \
+-p 8080:80 -d \
+-v /your_php_extension_ini:/usr/local/php/etc/php.d \
+-v /your_php_extension_file:/data/phpext \
+skiychan/nginx-php7
+```
+in xxx.ini, "zend_extension = /data/phpext/xxx.so", the zend_extension must be use ```/data/phpext/```.   
+
+## Enabling Extensions With Source
+Also, You can add the source to ```extension.sh```. Example:   
+```
+#Add extension mongodb
+curl -Lk https://pecl.php.net/get/mongodb-1.1.8.tgz | gunzip | tar x -C /home/extension && \
+cd /home/extension/mongodb-1.1.8 && \
+/usr/local/php/bin/phpize && \
+./configure --with-php-config=/usr/local/php/bin/php-config && \
+make && make install
+```
+Add ```mongodb.ini``` to folder ```extini```:   
+```
+extension=mongodb.so
 ```
 
+You can see the **[wiki](https://github.com/skiy-dockerfile/nginx-php7/wiki/Question-&-Answer)**
+
 ## [ChangeLog](changelogs.md)
-  
+
+## Thanks
+[Legion](https://www.dwhd.org)  
 
 ## Author
 Author: Skiychan    
 Email:  dev@skiy.net       
-Link:   https://www.zzzzy.com
+Link:   https://www.skiy.net
