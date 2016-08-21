@@ -22,6 +22,8 @@ if [ -f "/data/phpext/extension.sh" ]; then
 
     sh /data/phpext/extension.sh
 
+    mv /data/phpext/extension.sh /data/phpext/extension_back.sh
+
     #Clean OS
     yum remove -y gcc \
         gcc-c++ \
