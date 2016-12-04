@@ -1,3 +1,7 @@
+**2016 / 12 / 04:**  
+updated php to version 7.1.0
+updated nginx to version 1.11.6
+
 **2016 / 10 / 14:**  
 updated php to version 7.0.12
 updated nginx to version 1.11.5
