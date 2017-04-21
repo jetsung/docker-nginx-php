@@ -1,10 +1,19 @@
 FROM centos:7
-MAINTAINER Skiychan <dev@skiy.net>
+MAINTAINER Bruce <devopsbruce@qq.com>
 
 ENV NGINX_VERSION 1.11.6
 ENV PHP_VERSION 7.1.0
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 
 RUN set -x && \
+    #yum localinstall http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm -y && \
+    #yum localinstall http://rpms.famillecollet.com/enterprise/remi-release-7.rpm -y && \
+    #yum install -y wget && \
+    # mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup && \
+    #wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo && \
+    yum makecache && \
     yum install -y gcc \
     gcc-c++ \
     autoconf \
@@ -12,6 +21,9 @@ RUN set -x && \
     libtool \
     make \
     ntp \
+    vim \
+    net-tools \
+    wget \
     cmake && \
 
 #Install PHP library
@@ -110,6 +122,9 @@ RUN set -x && \
     cp /usr/local/php/etc/php-fpm.d/www.conf.default /usr/local/php/etc/php-fpm.d/www.conf && \
 
 #Install supervisor
+    #yum install -y python-pip && \
+    #pip install pip --upgrade && \
+    #pip install --no-deps --ignore-installed --pre supervisor && \
     easy_install supervisor && \
     mkdir -p /var/{log/supervisor,run/{sshd,supervisord}} && \
 
