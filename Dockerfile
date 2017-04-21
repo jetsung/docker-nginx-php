@@ -11,6 +11,7 @@ RUN set -x && \
     automake \
     libtool \
     make \
+    ntp \
     cmake && \
 
 #Install PHP library
