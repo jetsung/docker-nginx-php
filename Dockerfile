@@ -133,7 +133,7 @@ RUN set -x && \
 ADD supervisord.conf /etc/
 
 #Create web folder
-VOLUME ["/data/www", "/usr/local/nginx/conf/ssl", "/usr/local/nginx/conf/vhost", "/usr/local/php/etc/php.d", "/data/phpext"]
+VOLUME ["/data/www", "/usr/local/nginx/conf/ssl", "/usr/local/nginx/conf", "/usr/local/php/etc/php.d", "/data/phpext"]
 
 ADD index.php /data/www/
 
