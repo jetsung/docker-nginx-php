@@ -32,7 +32,7 @@ RUN set -x && \
     openssh-server \
     python-setuptools && \
 #Add user
-    mkdir -p /data/{www,phpext} && \
+    mkdir -p /data/{www,phpextfile} && \
     useradd -r -s /sbin/nologin -d /data/www -m -k no www && \
 #Download nginx & php
     mkdir -p /home/nginx-php && cd $_ && \

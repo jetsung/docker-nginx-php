@@ -48,8 +48,8 @@ skiychan/nginx-php7
 ```sh
 docker run --name nginx \
 -p 8080:80 -d \
--v /your_php_extension_ini:/usr/local/php/etc/php.d \
--v /your_php_extension_file:/data/phpext \
+-v /your_php_extension_ini:/usr/local/php/etc/conf.d \
+-v /your_php_extension_file:/data/phpextfile \
 skiychan/nginx-php7
 ```
 **ext-xxx.ini** 文件中的内容为
@@ -58,7 +58,7 @@ extension=mongodb.so
 ```
 扩展编译代码基本编写内容如下，详情请查看```extfile/extension.sh```文件：
 ```
-# curl -Lk https://pecl.php.net/get/mongodb-1.4.2.tgz | gunzip | tar x -C /home/extension && \
+curl -Lk https://pecl.php.net/get/mongodb-1.4.2.tgz | gunzip | tar x -C /home/extension && \
 cd /home/extension/mongodb-1.4.2 && \
 /usr/local/php/bin/phpize && \
 ./configure --with-php-config=/usr/local/php/bin/php-config && \
