@@ -35,7 +35,7 @@ docker run --name nginx -p 8080:80 -v /your_code_directory:/data/www -d skiychan
 ```sh
 docker run -d --name=nginx \
 -p 80:80 -p 443:443 \
--v your_crt_key_files:/usr/local/nginx/conf/ssl \
+-v your_crt_key_files_folder:/usr/local/nginx/conf/ssl \
 -e PROXY_WEB=On \
 -e PROXY_CRT=your_crt_name \
 -e PROXY_KEY=your_key_name \
@@ -43,8 +43,7 @@ docker run -d --name=nginx \
 skiychan/nginx-php7
 ```
 
-## Enabling Extensions With *.so
-add **ext-xxx.ini** file content:
+## Enabling Extensions With Source
 add xxx.so to folder ```/your_php_extension_file```, source ```/your_php_extension_file```. then run the command:   
 ```sh
 docker run --name nginx \
@@ -53,11 +52,14 @@ docker run --name nginx \
 -v /your_php_extension_file:/data/phpext \
 skiychan/nginx-php7
 ```
+
+**ext-xxx.ini** file content:
 ```
 extension=mongodb.so
 ```
 
-```extfile/extension.sh```:   
+```extfile/extension.sh```: 
+```  
 curl -Lk https://pecl.php.net/get/mongodb-1.4.2.tgz | gunzip | tar x -C /home/extension && \
 cd /home/extension/mongodb-1.4.2 && \
 /usr/local/php/bin/phpize && \
@@ -65,8 +67,8 @@ cd /home/extension/mongodb-1.4.2 && \
 make && make install
 ```
 
-You can see the **[wiki](https://github.com/skiy-dockerfile/nginx-php7/wiki/Question-&-Answer)**
-[中文版说明](README_CN.md) **[中文 Q&A wiki](https://github.com/skiy-dockerfile/nginx-php7/wiki/%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)**
+You can see the **[wiki](https://github.com/skiy-dockerfile/nginx-php7/wiki/Question-&-Answer)**   
+[中文README](README_CN.md) **[Q&A](https://github.com/skiy-dockerfile/nginx-php7/wiki/%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)**
 
 ## [ChangeLog](changelogs.md)
 

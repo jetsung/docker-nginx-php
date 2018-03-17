@@ -35,7 +35,7 @@ docker run --name nginx -p 8080:80 -v /your_code_directory:/data/www -d skiychan
 ```sh
 docker run -d --name=nginx \
 -p 80:80 -p 443:443 \
--v your_crt_key_files:/usr/local/nginx/conf/ssl \
+-v your_crt_key_files_folder:/usr/local/nginx/conf/ssl \
 -e PROXY_WEB=On \
 -e PROXY_CRT=your_crt_name \
 -e PROXY_KEY=your_key_name \
