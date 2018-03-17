@@ -23,7 +23,7 @@ To simply run the container:
 ```sh
 docker run --name nginx -p 8080:80 -d skiychan/nginx-php7
 ```
-You can then browse to http://\<docker_host\>:8080 to view the default install files.
+You can then browse to ```http://\<docker_host\>:8080``` to view the default install files.
 
 ## Volumes
 If you want to link to your web site directory on the docker host to the container run:
@@ -44,32 +44,29 @@ skiychan/nginx-php7
 ```
 
 ## Enabling Extensions With *.so
-Add xxx.ini to folder ```/your_php_extension_ini``` and add xxx.so to folder ```/your_php_extension_file```, then run the command:   
+add **ext-xxx.ini** file content:
+add xxx.so to folder ```/your_php_extension_file```, source ```/your_php_extension_file```. then run the command:   
 ```sh
 docker run --name nginx \
 -p 8080:80 -d \
--v /your_php_extension_ini:/usr/local/php/etc/php.d \
+-v /your_php_extension_ini:/data/phpextini \
 -v /your_php_extension_file:/data/phpext \
 skiychan/nginx-php7
 ```
-in xxx.ini, "zend_extension = /data/phpext/xxx.so", the zend_extension must be use ```/data/phpext/```.   
-
-## Enabling Extensions With Source
-Also, You can add the source to ```extension.sh```. Example:   
-```
-#Add extension mongodb
-curl -Lk https://pecl.php.net/get/mongodb-1.1.8.tgz | gunzip | tar x -C /home/extension && \
-cd /home/extension/mongodb-1.1.8 && \
-/usr/local/php/bin/phpize && \
-./configure --with-php-config=/usr/local/php/bin/php-config && \
-make && make install
-```
-Add ```mongodb.ini``` to folder ```extini```:   
 ```
 extension=mongodb.so
 ```
 
+```extfile/extension.sh```:   
+curl -Lk https://pecl.php.net/get/mongodb-1.4.2.tgz | gunzip | tar x -C /home/extension && \
+cd /home/extension/mongodb-1.4.2 && \
+/usr/local/php/bin/phpize && \
+./configure --with-php-config=/usr/local/php/bin/php-config && \
+make && make install
+```
+
 You can see the **[wiki](https://github.com/skiy-dockerfile/nginx-php7/wiki/Question-&-Answer)**
+[中文版说明](README_CN.md) **[中文 Q&A wiki](https://github.com/skiy-dockerfile/nginx-php7/wiki/%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)**
 
 ## [ChangeLog](changelogs.md)
 

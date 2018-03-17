@@ -48,7 +48,7 @@ skiychan/nginx-php7
 ```sh
 docker run --name nginx \
 -p 8080:80 -d \
--v /your_php_extension_ini:/usr/local/php/etc/conf.d \
+-v /your_php_extension_ini:/data/phpextini \
 -v /your_php_extension_file:/data/phpextfile \
 skiychan/nginx-php7
 ```

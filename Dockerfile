@@ -32,7 +32,7 @@ RUN set -x && \
     openssh-server \
     python-setuptools && \
 #Add user
-    mkdir -p /data/{www,phpextfile} && \
+    mkdir -p /data/{www,phpextini,phpextfile} && \
     useradd -r -s /sbin/nologin -d /data/www -m -k no www && \
 #Download nginx & php
     mkdir -p /home/nginx-php && cd $_ && \
@@ -57,7 +57,7 @@ RUN set -x && \
     cd /home/nginx-php/php-$PHP_VERSION && \
     ./configure --prefix=/usr/local/php \
     --with-config-file-path=/usr/local/php/etc \
-    --with-config-file-scan-dir=/usr/local/php/etc/php.d \
+    --with-config-file-scan-dir=/data/phpextini \
     --with-fpm-user=www \
     --with-fpm-group=www \
     --with-mcrypt=/usr/include \
@@ -131,12 +131,12 @@ ADD supervisord.conf /etc/
 # Vhost Folder: /usr/local/nginx/conf/vhost
 # php extfile ini Folder: /usr/local/php/etc/conf.d
 # php extfile Folder: /data/phpextfile
-VOLUME ["/data/www", "/usr/local/nginx/conf/ssl", "/usr/local/nginx/conf/vhost", "/usr/local/php/etc/conf.d", "/data/phpextfile"]
+VOLUME ["/data/www", "/usr/local/nginx/conf/ssl", "/usr/local/nginx/conf/vhost", "/data/phpextini", "/data/phpextfile"]
 
 ADD index.php /data/www/
 
 #Add ext setting to image
-ADD extini/ /usr/local/php/etc/conf.d/
+ADD extini/ /data/phpextini/
 ADD extfile/ /data/phpextfile/
 
 #Update nginx config
