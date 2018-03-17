@@ -36,10 +36,10 @@ RUN set -x && \
     useradd -r -s /sbin/nologin -d /data/www -m -k no www && \
 #Download nginx & php
     mkdir -p /home/nginx-php && cd $_ && \
-#    curl -Lk http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
-#    curl -Lk http://php.net/distributions/php-$PHP_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
-    curl -Lk http://127.0.0.1/tmp/nginx-$NGINX_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
-    curl -Lk http://127.0.0.1/tmp/php-$PHP_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
+    curl -Lk http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
+    curl -Lk http://php.net/distributions/php-$PHP_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
+#    curl -Lk http://127.0.0.1/tmp/nginx-$NGINX_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
+#    curl -Lk http://127.0.0.1/tmp/php-$PHP_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
 #Make install nginx
     cd /home/nginx-php/nginx-$NGINX_VERSION && \
     ./configure --prefix=/usr/local/nginx \
