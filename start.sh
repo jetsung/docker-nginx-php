@@ -1,5 +1,6 @@
 #!/bin/sh
 #########################################################################
+# START
 # File Name: start.sh
 # Author: Skiychan
 # Email:  dev@skiy.net
@@ -8,7 +9,7 @@
 #########################################################################
 
 # Add PHP Extension
-if [ -f "/data/phpext/extension.sh" ]; then
+if [ -f "/data/phpextfile/extension.sh" ]; then
     #Add support
     yum install -y gcc \
         gcc-c++ \
@@ -20,9 +21,9 @@ if [ -f "/data/phpext/extension.sh" ]; then
 
         mkdir -p /home/extension && \
 
-    sh /data/phpext/extension.sh
+    sh /data/phpextfile/extension.sh
 
-    mv /data/phpext/extension.sh /data/phpext/extension_back.sh
+    mv -rf /data/phpextfile/extension.sh /data/phpextfile/extension_back.sh
 
     #Clean OS
     yum remove -y gcc \

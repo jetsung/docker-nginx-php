@@ -1,8 +1,8 @@
 FROM centos:7
 MAINTAINER Skiychan <dev@skiy.net>
 
-ENV NGINX_VERSION 1.11.6
-ENV PHP_VERSION 7.1.0
+ENV NGINX_VERSION 1.13.9
+ENV PHP_VERSION 7.2.3
 
 RUN set -x && \
     yum install -y gcc \
@@ -15,7 +15,8 @@ RUN set -x && \
 
 #Install PHP library
 ## libmcrypt-devel DIY
-    rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm && \
+##  rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm && \
+    rpm -ivh http://127.0.0.1/tmp/epel-release-6-8.noarch.rpm && \
     yum install -y zlib \
     zlib-devel \
     openssl \
@@ -38,8 +39,10 @@ RUN set -x && \
 
 #Download nginx & php
     mkdir -p /home/nginx-php && cd $_ && \
-    curl -Lk http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
-    curl -Lk http://php.net/distributions/php-$PHP_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
+#    curl -Lk http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
+#    curl -Lk http://php.net/distributions/php-$PHP_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
+    curl -Lk http://127.0.0.1/tmp/nginx-$NGINX_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
+    curl -Lk http://127.0.0.1/tmp/php-$PHP_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
 
 #Make install nginx
     cd /home/nginx-php/nginx-$NGINX_VERSION && \
@@ -133,12 +136,18 @@ RUN set -x && \
 ADD supervisord.conf /etc/
 
 #Create web folder
-VOLUME ["/data/www", "/usr/local/nginx/conf/ssl", "/usr/local/nginx/conf", "/usr/local/php/etc/php.d", "/data/phpext"]
+# WEB Folder: /data/www
+# SSL Folder: /usr/local/nginx/conf/ssl
+# Vhost Folder: /usr/local/nginx/conf/vhost
+# php extfile ini Folder: /usr/local/php/etc/conf.d
+# php extfile Folder: /data/phpextfile
+VOLUME ["/data/www", "/usr/local/nginx/conf/ssl", "/usr/local/nginx/conf/vhost", "/usr/local/php/etc/conf.d", "/data/phpextfile"]
 
 ADD index.php /data/www/
 
-ADD extini/ /usr/local/php/etc/php.d/
-ADD extfile/ /data/phpext/
+#Add ext setting to image
+ADD extini/ /usr/local/php/etc/conf.d/
+ADD extfile/ /data/phpextfile/
 
 #Update nginx config
 ADD nginx.conf /usr/local/nginx/conf/
