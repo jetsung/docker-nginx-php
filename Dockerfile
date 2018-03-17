@@ -14,8 +14,8 @@ RUN set -x && \
     cmake && \
 #Install PHP library
 ## libmcrypt-devel DIY
-##  rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm && \
-    rpm -ivh http://127.0.0.1/tmp/epel-release-6-8.noarch.rpm && \
+   rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm && \
+##    rpm -ivh http://127.0.0.1/tmp/epel-release-6-8.noarch.rpm && \
     yum install -y zlib \
     zlib-devel \
     openssl \
