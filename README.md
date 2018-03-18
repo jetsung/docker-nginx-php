@@ -7,7 +7,7 @@ php:   **7.2.3**
 ## Docker Hub   
 **Nginx-PHP7:** [https://hub.docker.com/r/skiychan/nginx-php7](https://hub.docker.com/r/skiychan/nginx-php7)   
 
-**[Example](wiki/Example)**
+**[Example](https://github.com/skiy-dockerfile/nginx-php7/wiki/Example)**
    
 ## Installation
 Pull the image from the docker index rather than downloading the git repo. This prevents you having to build the image on every docker host.
@@ -72,8 +72,8 @@ cd /home/extension/mongodb-1.4.2 && \
 make && make install
 ```
 
-You can see the **[wiki](wiki/Question-&-Answer)**   
-[中文README](README_CN.md) **[Q&A](wiki/%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)**
+You can see the **[wiki](https://github.com/skiy-dockerfile/nginx-php7/wiki/Question-&-Answer)**   
+[中文README](README_CN.md) **[Q&A](https://github.com/skiy-dockerfile/nginx-php7/wiki/%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)**
 
 ## [ChangeLog](changelogs.md)
 
