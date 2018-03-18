@@ -67,7 +67,6 @@ cd /home/extension/mongodb-1.4.2 && \
 make && make install
 ```
 
-You can see the 
 **[En wiki](https://github.com/skiy-dockerfile/nginx-php7/wiki/Question-&-Answer)**   
 **[中文 wiki](https://github.com/skiy-dockerfile/nginx-php7/wiki/%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)**
 
