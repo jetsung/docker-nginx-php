@@ -1,23 +1,23 @@
 **2018 / 03 / 17:**  
-updated php to version 7.2.3
-updated nginx to version 1.13.9
-remove xdebug extension
+updated php to version 7.2.3   
+updated nginx to version 1.13.9    
+remove xdebug extension    
 
 **2016 / 12 / 04:**  
-updated php to version 7.1.0
-updated nginx to version 1.11.6
+updated php to version 7.1.0   
+updated nginx to version 1.11.6   
 
 **2016 / 10 / 14:**  
-updated php to version 7.0.12
+updated php to version 7.0.12   
 updated nginx to version 1.11.5
 
 **2016 / 08 / 21:**  
 updated php to version 7.0.10  
 
 **2016 / 08 / 03:**     
-added diy extension support
-added mongodb support
-clean the cache files, the mirror less 500M now.
+added diy extension support   
+added mongodb support   
+clean the cache files, the mirror less 500M now.   
 
 **2016 / 08 / 02:**     
 updated nginx to version 1.11.3
