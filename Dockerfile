@@ -15,7 +15,6 @@ RUN set -x && \
 #Install PHP library
 ## libmcrypt-devel DIY
    rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm && \
-##    rpm -ivh http://127.0.0.1/tmp/epel-release-6-8.noarch.rpm && \
     yum install -y zlib \
     zlib-devel \
     openssl \
@@ -38,8 +37,6 @@ RUN set -x && \
     mkdir -p /home/nginx-php && cd $_ && \
     curl -Lk http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
     curl -Lk http://php.net/distributions/php-$PHP_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
-#    curl -Lk http://127.0.0.1/tmp/nginx-$NGINX_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
-#    curl -Lk http://127.0.0.1/tmp/php-$PHP_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
 #Make install nginx
     cd /home/nginx-php/nginx-$NGINX_VERSION && \
     ./configure --prefix=/usr/local/nginx \

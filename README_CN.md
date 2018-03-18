@@ -5,7 +5,9 @@ nginx: **1.13.9**
 php:   **7.2.3**
 
 ## Docker Hub   
-**Nginx-PHP7:** [https://hub.docker.com/r/skiychan/nginx-php7](https://hub.docker.com/r/skiychan/nginx-php7)   
+**Nginx-PHP7:** [https://hub.docker.com/r/skiychan/nginx-php7](https://hub.docker.com/r/skiychan/nginx-php7)  
+
+**[Example](https://github.com/skiy-dockerfile/nginx-php7/wiki/Example)** 
    
 ## 安装使用
 从 Docker 拉取镜像
@@ -65,7 +67,11 @@ cd /home/extension/mongodb-1.4.2 && \
 make && make install
 ```
 
-更多请访问 **[中文 Q&A wiki](https://github.com/skiy-dockerfile/nginx-php7/wiki/%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)**
+You can see the 
+**[En wiki](https://github.com/skiy-dockerfile/nginx-php7/wiki/Question-&-Answer)**   
+**[中文 wiki](https://github.com/skiy-dockerfile/nginx-php7/wiki/%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)**
+
+[English README](README.md)
 
 ## [更新日志](changelogs.md)
 
