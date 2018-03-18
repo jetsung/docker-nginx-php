@@ -136,8 +136,8 @@ VOLUME ["/data/www", "/usr/local/nginx/conf/ssl", "/usr/local/nginx/conf/vhost",
 ADD index.php /data/www/
 
 #Add ext setting to image
-ADD extini/ /data/phpextini/
-ADD extfile/ /data/phpextfile/
+#ADD extini/ /data/phpextini/
+#ADD extfile/ /data/phpextfile/
 
 #Update nginx config
 ADD nginx.conf /usr/local/nginx/conf/

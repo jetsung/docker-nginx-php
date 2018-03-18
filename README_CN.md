@@ -52,7 +52,7 @@ docker run --name nginx \
 -v /your_php_extension_file:/data/phpextfile \
 skiychan/nginx-php7
 ```
-**ext-xxx.ini** 文件中的内容为
+```extini/ext-xxx.ini``` 文件中的内容为
 ```
 extension=mongodb.so
 ```
