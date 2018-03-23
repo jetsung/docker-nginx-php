@@ -1,7 +1,7 @@
 FROM centos:7
 MAINTAINER Skiychan <dev@skiy.net>
 
-ENV NGINX_VERSION 1.13.9
+ENV NGINX_VERSION 1.13.10
 ENV PHP_VERSION 7.2.3
 
 RUN set -x && \

@@ -1,3 +1,6 @@
+**2018 / 03 / 23:**  
+updated nginx to version 1.13.10 
+
 **2018 / 03 / 17:**  
 updated php to version 7.2.3   
 updated nginx to version 1.13.9    
