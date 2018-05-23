@@ -2,7 +2,7 @@ FROM centos:7
 MAINTAINER Skiychan <dev@skiy.net>
 
 ENV NGINX_VERSION 1.14.0
-ENV PHP_VERSION 7.2.6
+ENV PHP_VERSION 7.2.5
 
 RUN set -x && \
     yum install -y gcc \
@@ -61,7 +61,6 @@ RUN set -x && \
     --with-config-file-scan-dir=/data/phpextini \
     --with-fpm-user=www \
     --with-fpm-group=www \
-    --with-mcrypt=/usr/include \
     --with-mysqli \
     --with-pdo-mysql \
     --with-openssl \
@@ -83,7 +82,6 @@ RUN set -x && \
     --enable-mbregex \
     --enable-mbstring \
     --enable-ftp \
-    --enable-gd-native-ttf \
     --enable-mysqlnd \
     --enable-pcntl \
     --enable-sockets \
