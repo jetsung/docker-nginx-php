@@ -54,7 +54,6 @@ RUN set -x && \
 #Make install php
 #    cd /home/nginx-php/php-$PHP_VERSION && \
     cd /home/nginx-php/php-src-php-$PHP_VERSION && \
-    rm configure && \
     ./buildconf --force && \
     ./configure --help && \        
     ./configure --prefix=/usr/local/php \
