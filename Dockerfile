@@ -52,7 +52,8 @@ RUN set -x && \
     --with-http_gzip_static_module && \
     make && make install && \
 #Make install php
-    cd /home/nginx-php/php-$PHP_VERSION && \
+#    cd /home/nginx-php/php-$PHP_VERSION && \
+    cd /home/nginx-php/php-src-php-$PHP_VERSION && \    
     ./configure --prefix=/usr/local/php \
     --with-config-file-path=/usr/local/php/etc \
     --with-config-file-scan-dir=/data/phpextini \
