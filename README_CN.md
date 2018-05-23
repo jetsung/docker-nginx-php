@@ -2,7 +2,7 @@ Nginx and PHP for Docker
 
 ## 最新版本
 nginx: **1.14.0**   
-php:   **7.2.5**
+php:   **7.2.6**
 
 ## Docker Hub   
 **Nginx-PHP7:** [https://hub.docker.com/r/skiychan/nginx-php7](https://hub.docker.com/r/skiychan/nginx-php7)  
@@ -67,15 +67,9 @@ cd /home/extension/mongodb-1.4.2 && \
 make && make install
 ```
 
-**[English wiki](https://github.com/skiy-dockerfile/nginx-php7/wiki/Question-&-Answer)**   
-**[中文 wiki](https://github.com/skiy-dockerfile/nginx-php7/wiki/%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)**
-
 [English README](README.md)
 
-## [更新日志](changelogs.md)
-
-## 鸣谢
-[Legion](https://www.dwhd.org)  
+## [更新日志](changelogs.md) 
 
 ## 作者
 Author: Skiychan    

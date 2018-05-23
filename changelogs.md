@@ -1,3 +1,6 @@
+**v2.6.0**   
+updated php to version 7.2.6    
+
 **v2.5.0**   
 updated php to version 7.2.5   
    
