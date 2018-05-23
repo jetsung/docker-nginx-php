@@ -53,7 +53,10 @@ RUN set -x && \
     make && make install && \
 #Make install php
 #    cd /home/nginx-php/php-$PHP_VERSION && \
-    cd /home/nginx-php/php-src-php-$PHP_VERSION && \    
+    cd /home/nginx-php/php-src-php-$PHP_VERSION && \
+    rm configure && \
+    ./buildconf --force && \
+    ./configure --help && \        
     ./configure --prefix=/usr/local/php \
     --with-config-file-path=/usr/local/php/etc \
     --with-config-file-scan-dir=/data/phpextini \
