@@ -2,7 +2,7 @@ FROM centos:7
 MAINTAINER Skiychan <dev@skiy.net>
 
 ENV NGINX_VERSION 1.14.0
-ENV PHP_VERSION 7.2.5
+ENV PHP_VERSION 7.2.6
 
 RUN set -x && \
     yum install -y gcc \
@@ -36,8 +36,7 @@ RUN set -x && \
 #Download nginx & php
     mkdir -p /home/nginx-php && cd $_ && \
     curl -Lk http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
-#    curl -Lk http://php.net/distributions/php-$PHP_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
-    curl -Lk https://github.com/php/php-src/archive/php-$PHP_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
+    curl -Lk http://php.net/distributions/php-$PHP_VERSION.tar.gz | gunzip | tar x -C /home/nginx-php && \
 #Make install nginx
     cd /home/nginx-php/nginx-$NGINX_VERSION && \
     ./configure --prefix=/usr/local/nginx \
@@ -52,10 +51,7 @@ RUN set -x && \
     --with-http_gzip_static_module && \
     make && make install && \
 #Make install php
-#    cd /home/nginx-php/php-$PHP_VERSION && \
-    cd /home/nginx-php/php-src-php-$PHP_VERSION && \
-    ./buildconf --force && \
-    ./configure --help && \        
+    cd /home/nginx-php/php-$PHP_VERSION && \      
     ./configure --prefix=/usr/local/php \
     --with-config-file-path=/usr/local/php/etc \
     --with-config-file-scan-dir=/data/phpextini \
