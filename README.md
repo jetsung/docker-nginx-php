@@ -1,7 +1,7 @@
 Nginx and PHP for Docker
 
 ## Last Version
-nginx: **1.15.0**   
+nginx: **1.15.1**   
 php:   **7.2.7**
 
 ## Docker Hub   
