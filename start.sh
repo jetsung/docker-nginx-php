@@ -23,7 +23,7 @@ if [ -f "/data/phpextfile/extension.sh" ]; then
 
     sh /data/phpextfile/extension.sh
 
-    mv -rf /data/phpextfile/extension.sh /data/phpextfile/extension_back.sh
+    mv -f /data/phpextfile/extension.sh /data/phpextfile/extension_back.sh
 
     #Clean OS
     yum remove -y gcc \
