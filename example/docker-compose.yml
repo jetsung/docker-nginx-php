@@ -1,0 +1,34 @@
+version: "3"
+
+x-image: &x-image
+  image: jetsung/nginx-php:latest
+
+services:
+  p38080:
+    <<: *x-image
+    ports:
+      - "38080:80"
+  p38081:
+    <<: *x-image
+    volumes:
+      - ./wwwroot:/data/wwwroot
+    ports:
+      - "38081:80"
+  p38082:
+    <<: *x-image
+    volumes:
+      - ./wwwroot:/data/wwwroot
+      - ./wwwlogs:/data/wwwlogs
+      - ./vhost:/usr/local/nginx/conf/vhost
+      - ./ssl:/usr/local/nginx/conf/ssl
+    ports:
+      - "38082:80"
+      - "38083:443"
+  p38084:
+    <<: *x-image
+    volumes:
+      - ./wwwroot:/data/wwwroot
+      - ./wwwlogs:/data/wwwlogs
+      - ./extension.sh:/app/extension.sh
+    ports:
+      - "38084:80"

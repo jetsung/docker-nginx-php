@@ -1,0 +1,118 @@
+name: build-push
+
+on:
+  workflow_dispatch:
+    inputs:
+      platforms:
+        description: "buildx platforms"
+        default: "linux/amd64,linux/arm64"
+        required: true
+        type: string
+      nginx:
+        description: "nginx version"
+        default: "1.24.0"
+        required: true
+        type: string
+      php83:
+        description: "php8.3 image. e.g: 8.3.000"
+        default: ""
+        type: string
+      php82:
+        description: "php8.2 image. e.g: 8.2.010"
+        default: ""
+        type: string
+      php81:
+        description: "php8.1 image. e.g: 8.1.100"
+        default: ""
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        nginx: ["${{ inputs.nginx }}"]
+        php: ["8.3", "8.2", "8.1"]
+        include:
+          - php: "8.3"
+            tag: ${{ inputs.php83 }}
+          - php: "8.2"
+            tag: ${{ inputs.php82 }}
+          - php: "8.1"
+            tag: ${{ inputs.php81 }}
+      fail-fast: true
+
+    steps:
+      - id: update
+        name: Update image
+        run: |
+          echo "nginx: ${{ matrix.nginx }}"
+          echo "tag: ${{ matrix.tag }}"
+          if [[ -z "${{ matrix.nginx }}" ]] || [[ -z "${{ matrix.tag }}" ]]; then
+            echo "no, no update"
+            echo "update=no" >> $GITHUB_OUTPUT
+          else
+            echo "yes, update"
+            echo "update=yes" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate tags
+        id: meta
+        if: steps.update.outputs.update == 'yes'
+        env:
+          IMAGES: "${{ secrets.DOCKERHUB_USERNAME }}/nginx-php ghcr.io/${{ github.actor }}/nginx-php"
+        run: |
+          IMAGE_TAGS=''
+          IFS=' ' read -ra IMAGE <<< "$IMAGES"
+          for element in "${IMAGE[@]}"; do
+            LAT_VER=''
+            if [[ "${{ matrix.php }}" == "8.3" ]]; then
+              LAT_VER="${element}:latest,"
+            fi
+            PRE_VER="${element}:${{ matrix.php }},"
+            FUL_VER="${element}:${{ matrix.tag }},"
+            IMAGE_TAG="${LAT_VER}${PRE_VER}${FUL_VER}"
+            IMAGE_TAGS="${IMAGE_TAGS}${IMAGE_TAG}"
+          done
+          echo "IMAGE_TAGS=$IMAGE_TAGS" >> "$GITHUB_OUTPUT"
+
+      - name: Set build args
+        if: steps.meta.outputs.IMAGE_TAGS != ''
+        run: |
+          PHP_VER=$(echo "${{ matrix.tag }}" | awk -F'.' '{ printf "%d.%d.%d", $1, $2, int($3/10) }')
+          echo "NGINX_VERSION=${{ matrix.nginx }}" >> $GITHUB_ENV
+          echo "PHP_VERSION=$PHP_VER" >> $GITHUB_ENV
+
+      - name: Check out the repo
+        uses: actions/checkout@v4
+        if: steps.meta.outputs.IMAGE_TAGS != ''
+      - name: Login into registry docker
+        uses: docker/login-action@v3
+        if: steps.meta.outputs.IMAGE_TAGS != ''
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login into registry ghcr
+        uses: docker/login-action@v3
+        if: steps.meta.outputs.IMAGE_TAGS != ''
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        if: steps.meta.outputs.IMAGE_TAGS != ''
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        if: steps.meta.outputs.IMAGE_TAGS != ''
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        if: steps.meta.outputs.IMAGE_TAGS != ''
+        with:
+          platforms: ${{ inputs.platforms }}
+          file: Dockerfile
+          build-args: |
+            NGINX_VERSION=${{ env.NGINX_VERSION }}
+            PHP_VERSION=${{ env.PHP_VERSION }}
+          push: true
+          tags: "${{ steps.meta.outputs.IMAGE_TAGS }}"

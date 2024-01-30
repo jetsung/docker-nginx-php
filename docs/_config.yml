@@ -1,0 +1,11 @@
+theme: jekyll-theme-cayman
+title: nginx-php
+description: Nginx PHP for Docker
+encoding: UTF-8
+highlighter: rouge
+
+copyright:
+year: 2018-2024
+name: Jetsung Chan
+
+timezone: Asia/Shanghai

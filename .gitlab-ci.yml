@@ -1,0 +1,25 @@
+stages:
+  - build
+
+build:
+  stage: build
+  image: docker:latest
+  services:
+    - name: docker:dind
+  artifacts:
+    expire_in: 1 d
+  variables:
+    D_USER: jetsung
+  rules:
+    - changes:
+        - Dockerfile
+        - build.sh
+      when: manual
+      allow_failure: false
+  before_script: |
+    echo "$DOCKERHUB_TOKEN" | docker login "${DOCKER_REGISTRY}" -u "$DOCKERHUB_USERNAME" --password-stdin
+    apk --update add git curl bash
+  script:
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    - docker buildx create --use --name mybuilder
+    - bash build.sh
