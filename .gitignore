@@ -1,0 +1,9 @@
+.*~
+.vscode/
+.swp
+.DS_Store
+
+*.log
+files/
+extensions/extension.sh
+.env
