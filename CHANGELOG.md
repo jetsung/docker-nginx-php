@@ -3,6 +3,11 @@
 - Since [46fa6a0](https://github.com/jetsung/docker-nginx-php/tree/46fa6a0f2621a4369e3f369ce165383a81115b61)
 
 ---
+Associated tags: `8.2.270, 8.3.150, 8.4.010`
+
+Base: `ubuntu:24.04`
+
+---
 
 ## 2022.01.22
 

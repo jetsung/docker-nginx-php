@@ -1,11 +1,11 @@
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 LABEL maintainer="Jetsung Chan<jetsungchan@gmail.com>"
-ARG NGINX_VERSION=1.21.5
-ARG PHP_VERSION=8.1.0
+ARG NGINX_VERSION=1.26.2
+ARG PHP_VERSION=8.4.1
 ENV NGX_WWW_ROOT /data/wwwroot
 ENV NGX_LOG_ROOT /data/wwwlogs
 ENV TMP /tmp/nginx-php/
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND noninteractive
 RUN mkdir -p /data/{wwwroot,wwwlogs,}
 RUN set -eux \
   ; \
@@ -27,18 +27,18 @@ RUN set -eux \
   curl \
   supervisor ; \
   mkdir -p "${TMP}" && cd "${TMP}" ; \
-  curl -Lk --retry 3 "https://github.com/kkos/oniguruma/releases/download/v6.9.7.1/onig-6.9.7.1.tar.gz" | gunzip | tar x \
+  curl -Lk --retry 3 "https://github.com/kkos/oniguruma/releases/download/v6.9.9/onig-6.9.9.tar.gz" | gunzip | tar x \
   ; \
   # curl -Lk --retry 3 "https://github.com/jedisct1/libsodium/releases/download/1.0.18-RELEASE/libsodium-1.0.18.tar.gz" | gunzip | tar x \
   # curl -Lk --retry 3 "https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz" | gunzip | tar x \
   # ; \
-  curl -Lk --retry 3 https://pecl.php.net/get/redis-5.3.7.tgz | gunzip | tar x \
+  curl -Lk --retry 3 https://pecl.php.net/get/redis-6.1.0.tgz | gunzip | tar x \
   ; \
   curl -Lk --retry 3 "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" | gunzip | tar x \
   ; \
   curl -Lk --retry 3 "https://php.net/distributions/php-${PHP_VERSION}.tar.gz" | gunzip | tar x \
   ; \
-  cd onig-6.9.7 ; \
+  cd onig-6.9.9 ; \
   ./configure --prefix=/usr ; \
   make && make install ; \
   # cd .. ; \
@@ -109,7 +109,7 @@ RUN set -eux \
   mv composer.phar /usr/local/bin/composer ; \
   chmod +x /usr/local/bin/composer ; \
   EXTENSION_DIR=$(php-config --extension-dir) ; \
-  cd redis-5.3.7 ; \
+  cd redis-6.1.0 ; \
   phpize ; \
   ./configure --with-php-config=/usr/local/php/bin/php-config ; \
   make && make install ; \

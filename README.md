@@ -6,7 +6,8 @@ English | [简体中文](./README_CN.md)
 
 | Name    | Version |  Docker tag  |
 | :------ | :------ | :----------: |
-| **PHP** | 8.3.x   | latest / 8.3 |
+| **PHP** | 8.4.x   | latest / 8.4 |
+| **PHP** | 8.3.x   |     8.3      |
 | **PHP** | 8.2.x   |     8.2      |
 | **PHP** | 8.1.x   |     8.1      |
 
