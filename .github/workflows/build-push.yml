@@ -10,7 +10,7 @@ on:
         type: string
       nginx:
         description: "nginx version"
-        default: "1.26.2"
+        default: "1.28.0"
         required: true
         type: string
       php84:

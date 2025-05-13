@@ -41,7 +41,7 @@ docker pull ghcr.io/jetsung/nginx-php:latest
 
 ## 手册
 
-- **[网站](http://nginx-php.222029.xyz)**
+- **[网站](http://nginx-php.zzzzy.com)**
 - [文档](./docs)
 - [扩展](./extensions)
 

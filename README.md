@@ -41,7 +41,7 @@ docker pull ghcr.io/jetsung/nginx-php:latest
 
 ## Manual
 
-- **[WebSite](http://nginx-php.222029.xyz)**
+- **[WebSite](http://nginx-php.zzzzy.com)**
 - [Documents](./docs)
 - [Extensions](./extensions)
 
