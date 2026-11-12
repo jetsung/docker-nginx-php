@@ -34,7 +34,8 @@ RUN set -eux \
   curl -Lk --retry 3 "https://php.net/distributions/php-${PHP_VERSION}.tar.gz" | gunzip | tar x \
   ; \
   cd libsodium-1.0.22 ; \
-  ./configure --disable-dependency-tracking --enable-minimal ; \
+  # 不能使用 --enable-minimal: PHP 8.4+ 的 ext/sodium 需要 AEGIS API
+  ./configure --disable-dependency-tracking ; \
   make && make install ; \
   cd .. ; \
   cd "php-${PHP_VERSION}" ; \  
