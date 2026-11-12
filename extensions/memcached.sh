@@ -1,45 +1,24 @@
 #!/bin/bash
 
-install_pecl_memcached() {
-    apt-get install -y libmemcached-dev
+# 安装 PIE (PHP Installer for Extensions), 替代已弃用的 PECL
+install_pie() {
+    command -v pie >/dev/null 2>&1 && return
 
-    curl -Lk https://pecl.php.net/get/memcached-3.1.5.tgz | gunzip | tar x
-    cd memcached-3.1.5 || exit
-
-    phpize
-    ./configure --with-php-config=/usr/local/php/bin/php-config
-    make && make install
-
-    EXTENSION_DIR=$(php-config --extension-dir)
-    if [ -f "$EXTENSION_DIR/memcached.so" ]; then
-        echo 'extension=memcached.so' >/usr/local/php/etc/php.d/05-memcached.ini
-    fi
-
-    cd ..
+    curl -fL --retry 3 https://github.com/php/pie/releases/latest/download/pie.phar \
+        -o /usr/local/bin/pie
+    chmod +x /usr/local/bin/pie
 }
 
-install_pecl_memcache() {
-    curl -Lk https://pecl.php.net/get/memcache-8.0.tgz | gunzip | tar x
-    cd memcache-8.0 || exit
+install_memcached() {
+    apt-get install -y libmemcached-dev
 
-    phpize
-    ./configure --with-php-config=/usr/local/php/bin/php-config
-    make && make install
-
-    EXTENSION_DIR=$(php-config --extension-dir)
-    if [ -f "$EXTENSION_DIR/memcache.so" ]; then
-        echo 'extension=memcache.so' >/usr/local/php/etc/php.d/05-memcache.ini
-    fi
-
-    cd ..
+    install_pie
+    pie install php-memcached/php-memcached
 }
 
 [ -d "/tmp/extension" ] || mkdir /tmp/extension
 
 pushd /tmp/extension || exit
-UNINSTALLED=$(php --ri memcache | grep 'not present')
-[ -z "$UNINSTALLED" ] || install_pecl_memcache
-
 UNINSTALLED=$(php --ri memcached | grep 'not present')
-[ -z "$UNINSTALLED" ] || install_pecl_memcached
+[ -z "$UNINSTALLED" ] || install_memcached
 popd || exit

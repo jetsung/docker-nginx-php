@@ -9,116 +9,207 @@ on:
         required: true
         type: string
       nginx:
-        description: "nginx version"
-        default: "1.28.0"
-        required: true
+        description: "nginx version (留空则自动获取最新版)"
+        default: ""
+        required: false
+        type: string
+      php85:
+        description: "php 8.5 version, e.g: 8.5.1 (留空则自动获取)"
+        default: ""
         type: string
       php84:
-        description: "php8.4 image. e.g: 8.4.010"
+        description: "php 8.4 version, e.g: 8.4.16 (留空则自动获取)"
         default: ""
-        type: string        
+        type: string
       php83:
-        description: "php8.3 image. e.g: 8.3.000"
+        description: "php 8.3 version, e.g: 8.3.28 (留空则自动获取)"
         default: ""
         type: string
       php82:
-        description: "php8.2 image. e.g: 8.2.010"
+        description: "php 8.2 version, e.g: 8.2.35 (留空则自动获取)"
         default: ""
         type: string
-      php81:
-        description: "php8.1 image. e.g: 8.1.100"
-        default: ""
-        type: string
+  schedule:
+    # 北京时间每日 0 点 (UTC 16:00)
+    - cron: "0 16 * * *"
+
+permissions:
+  contents: write
+  packages: write
+
+env:
+  PHP_BRANCHES: "8.5 8.4 8.3 8.2"
+  LATEST_BRANCH: "8.5"
 
 jobs:
-  build:
+  prepare:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        nginx: ["${{ inputs.nginx }}"]
-        php: ["8.4", "8.3", "8.2", "8.1"]
-        include:
-          - php: "8.4"
-            tag: ${{ inputs.php84 }}
-          - php: "8.3"
-            tag: ${{ inputs.php83 }}
-          - php: "8.2"
-            tag: ${{ inputs.php82 }}
-          - php: "8.1"
-            tag: ${{ inputs.php81 }}
-      fail-fast: true
-
+    outputs:
+      matrix: ${{ steps.versions.outputs.matrix }}
+      nginx: ${{ steps.versions.outputs.nginx }}
+      changed: ${{ steps.versions.outputs.changed }}
     steps:
-      - id: update
-        name: Update image
-        run: |
-          echo "nginx: ${{ matrix.nginx }}"
-          echo "tag: ${{ matrix.tag }}"
-          if [[ -z "${{ matrix.nginx }}" ]] || [[ -z "${{ matrix.tag }}" ]]; then
-            echo "no, no update"
-            echo "update=no" >> $GITHUB_OUTPUT
-          else
-            echo "yes, update"
-            echo "update=yes" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Generate tags
-        id: meta
-        if: steps.update.outputs.update == 'yes'
-        env:
-          IMAGES: "${{ secrets.DOCKERHUB_USERNAME }}/nginx-php ghcr.io/${{ github.actor }}/nginx-php"
-        run: |
-          IMAGE_TAGS=''
-          IFS=' ' read -ra IMAGE <<< "$IMAGES"
-          for element in "${IMAGE[@]}"; do
-            LAT_VER=''
-            if [[ "${{ matrix.php }}" == "8.4" ]]; then
-              LAT_VER="${element}:latest,"
-            fi
-            PRE_VER="${element}:${{ matrix.php }},"
-            FUL_VER="${element}:${{ matrix.tag }},"
-            IMAGE_TAG="${LAT_VER}${PRE_VER}${FUL_VER}"
-            IMAGE_TAGS="${IMAGE_TAGS}${IMAGE_TAG}"
-          done
-          echo "IMAGE_TAGS=$IMAGE_TAGS" >> "$GITHUB_OUTPUT"
-
-      - name: Set build args
-        if: steps.meta.outputs.IMAGE_TAGS != ''
-        run: |
-          PHP_VER=$(echo "${{ matrix.tag }}" | awk -F'.' '{ printf "%d.%d.%d", $1, $2, int($3/10) }')
-          echo "NGINX_VERSION=${{ matrix.nginx }}" >> $GITHUB_ENV
-          echo "PHP_VERSION=$PHP_VER" >> $GITHUB_ENV
-
       - name: Check out the repo
-        uses: actions/checkout@v4
-        if: steps.meta.outputs.IMAGE_TAGS != ''
-      - name: Login into registry docker
-        uses: docker/login-action@v3
-        if: steps.meta.outputs.IMAGE_TAGS != ''
+        uses: actions/checkout@v7
+
+      - id: versions
+        name: Resolve PHP / NGINX versions
+        run: |
+          # ---- nginx 版本: 手动指定优先, 否则取 nginx.org 最新版 ----
+          if [[ -n "${{ inputs.nginx }}" ]]; then
+            NGINX="${{ inputs.nginx }}"
+          else
+            NGINX=$(curl -fsSL "https://nginx.org/en/download.html" |
+              grep -oE 'nginx-[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz' |
+              head -n 1 |
+              sed -e 's/^nginx-//' -e 's/\.tar\.gz$//')
+          fi
+          echo "nginx: ${NGINX}"
+
+          # ---- 与 version.txt 比对, 判断 nginx 是否有变更 ----
+          CUR_NGINX=$(tr -d '[:space:]' < version.txt)
+          NGINX_CHANGED="false"
+          [[ "${CUR_NGINX}" != "${NGINX}" ]] && NGINX_CHANGED="true"
+          echo "nginx changed: ${CUR_NGINX} -> ${NGINX} (${NGINX_CHANGED})"
+
+          # ---- ghcr.io 已有 tag 列表 ----
+          OWNER="${GITHUB_REPOSITORY_OWNER,,}"
+          IMAGE="${OWNER}/nginx-php"
+          GHCR_TOKEN=$(curl -fsSL "https://ghcr.io/token?scope=repository:${IMAGE}:pull" | jq -r '.token')
+          curl -fsSL -H "Authorization: Bearer ${GHCR_TOKEN}" \
+            "https://ghcr.io/v2/${IMAGE}/tags/list" > tags.json ||
+            echo '{"tags":[]}' > tags.json
+
+          # ---- 各 PHP 分支最新版本 (手动指定优先) ----
+          # 官方 releases JSON 接口, 返回所有活跃分支的最新版本
+          curl -fsSL --retry 3 "https://www.php.net/releases/active.php" > php-active.json
+
+          INCLUDE=""
+          for BR in ${PHP_BRANCHES}; do
+            INPUT_VAR=$(echo "${BR}" | tr -d '.')
+            PHP_INPUT=""
+            case "${BR}" in
+              8.5) PHP_INPUT="${{ inputs.php85 }}" ;;
+              8.4) PHP_INPUT="${{ inputs.php84 }}" ;;
+              8.3) PHP_INPUT="${{ inputs.php83 }}" ;;
+              8.2) PHP_INPUT="${{ inputs.php82 }}" ;;
+            esac
+
+            if [[ -n "${PHP_INPUT}" ]]; then
+              PHP="${PHP_INPUT}"
+            else
+              PHP=$(jq -r --arg br "${BR}" '.[($br | split(".") | first)][$br].version // empty' php-active.json)
+            fi
+            [[ "${PHP}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "获取 PHP ${BR} 版本失败, 跳过"; continue; }
+
+            # ---- 计算该 PHP 版本的构建序号 N ----
+            MAXN=$(jq -r --arg p "${PHP}" '
+              [.tags[]?
+                | select(test("^" + $p + "\\.[0-9]+$"))
+                | split(".") | last | tonumber]
+              | max // -1' tags.json)
+
+            if [[ "${MAXN}" -lt 0 ]]; then
+              # 未构建过, 全新构建 N=0
+              N=0
+            elif [[ "${NGINX_CHANGED}" != "true" ]]; then
+              echo "skip: ${PHP} 已构建至 ${PHP}.${MAXN} 且 nginx (${CUR_NGINX}) 无变更"
+              continue
+            else
+              # nginx 变更, N 递增
+              N=$((MAXN + 1))
+            fi
+
+            LATEST="false"
+            [[ "${BR}" = "${LATEST_BRANCH}" ]] && LATEST="true"
+
+            ITEM=$(jq -cn \
+              --arg php "${PHP}" --arg branch "${BR}" \
+              --arg tag "${PHP}.${N}" --arg nginx "${NGINX}" \
+              --argjson latest "${LATEST}" \
+              '{php:$php, branch:$branch, tag:$tag, nginx:$nginx, latest:$latest}')
+            INCLUDE="${INCLUDE}${INCLUDE:+,}${ITEM}"
+          done
+
+          MATRIX=$(printf '{"include":[%s]}' "${INCLUDE}")
+          echo "matrix=${MATRIX}"
+          echo "matrix=${MATRIX}" >> "$GITHUB_OUTPUT"
+          echo "nginx=${NGINX}" >> "$GITHUB_OUTPUT"
+          echo "changed=${NGINX_CHANGED}" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: prepare
+    if: needs.prepare.outputs.matrix != '{"include":[]}'
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v7
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Login into registry ghcr
-        uses: docker/login-action@v3
-        if: steps.meta.outputs.IMAGE_TAGS != ''
+
+      - name: Login to GHCR
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ github.token }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-        if: steps.meta.outputs.IMAGE_TAGS != ''
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        if: steps.meta.outputs.IMAGE_TAGS != ''
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate tags
+        id: meta
+        run: |
+          OWNER="${GITHUB_REPOSITORY_OWNER,,}"
+          TAGS="ghcr.io/${OWNER}/nginx-php:${{ matrix.tag }},ghcr.io/${OWNER}/nginx-php:${{ matrix.branch }}"
+
+          if [[ -n "${{ secrets.DOCKERHUB_USERNAME }}" ]]; then
+            TAGS="${TAGS},${{ secrets.DOCKERHUB_USERNAME }}/nginx-php:${{ matrix.tag }},${{ secrets.DOCKERHUB_USERNAME }}/nginx-php:${{ matrix.branch }}"
+          fi
+
+          if [[ "${{ matrix.latest }}" = "true" ]]; then
+            TAGS="${TAGS},ghcr.io/${OWNER}/nginx-php:latest"
+            [[ -n "${{ secrets.DOCKERHUB_USERNAME }}" ]] && \
+              TAGS="${TAGS},${{ secrets.DOCKERHUB_USERNAME }}/nginx-php:latest"
+          fi
+
+          echo "TAGS=${TAGS}"
+          echo "TAGS=${TAGS}" >> "$GITHUB_OUTPUT"
+
       - name: Build and push
-        uses: docker/build-push-action@v6
-        if: steps.meta.outputs.IMAGE_TAGS != ''
+        uses: docker/build-push-action@v7
         with:
-          platforms: ${{ inputs.platforms }}
+          platforms: ${{ inputs.platforms || 'linux/amd64,linux/arm64' }}
           file: Dockerfile
           build-args: |
-            NGINX_VERSION=${{ env.NGINX_VERSION }}
-            PHP_VERSION=${{ env.PHP_VERSION }}
+            NGINX_VERSION=${{ matrix.nginx }}
+            PHP_VERSION=${{ matrix.php }}
           push: true
-          tags: "${{ steps.meta.outputs.IMAGE_TAGS }}"
+          tags: ${{ steps.meta.outputs.TAGS }}
+
+  finalize:
+    needs: [prepare, build]
+    if: needs.prepare.outputs.changed == 'true' && !failure() && !cancelled()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v7
+
+      - name: Update version.txt and commit
+        run: |
+          echo "${{ needs.prepare.outputs.nginx }}" > version.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add version.txt
+          git commit -m "build: nginx 升级至 ${{ needs.prepare.outputs.nginx }}"
+          git push
