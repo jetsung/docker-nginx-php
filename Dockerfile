@@ -39,7 +39,7 @@ RUN set -eux \
   make && make install ; \
   cd .. ; \
   cd "php-${PHP_VERSION}" ; \  
-  export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/ ; \
+  export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig/ ; \
   ./configure --prefix=/usr/local/php/ \
   --with-config-file-path=/usr/local/php/etc/ \
   --with-config-file-scan-dir=/usr/local/php/etc/php.d/ \
