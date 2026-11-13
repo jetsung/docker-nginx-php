@@ -36,7 +36,7 @@ RUN set -eux \
   cd libsodium-1.0.22 ; \
   # 不能使用 --enable-minimal: PHP 8.4+ 的 ext/sodium 需要 AEGIS API
   ./configure --disable-dependency-tracking ; \
-  make && make install ; \
+  make && make install && ldconfig ; \
   cd .. ; \
   cd "php-${PHP_VERSION}" ; \  
   export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig/ ; \
