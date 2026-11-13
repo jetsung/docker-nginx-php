@@ -1,8 +1,8 @@
 #!/bin/bash
 
 install_swoole() {
-    curl -Lk https://ghproxy.com/https://github.com/swoole/swoole-src/archive/v4.8.13.tar.gz | gunzip | tar x
-    cd swoole-src-4.8.13 || exit
+    curl -Lk https://github.com/swoole/swoole-src/archive/v6.2.5.tar.gz | gunzip | tar x
+    cd swoole-src-6.2.5 || exit
 
     phpize
     ./configure --with-php-config=/usr/local/php/bin/php-config

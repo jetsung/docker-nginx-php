@@ -1,6 +1,6 @@
 FROM ubuntu:24.04
 LABEL maintainer="Jetsung Chan<jetsungchan@gmail.com>"
-ARG NGINX_VERSION=1.26.2
+ARG NGINX_VERSION=1.31.8
 ARG PHP_VERSION=8.4.1
 ENV NGX_WWW_ROOT /data/wwwroot
 ENV NGX_LOG_ROOT /data/wwwlogs
@@ -10,7 +10,7 @@ RUN mkdir -p /data/{wwwroot,wwwlogs,}
 RUN set -eux \
   ; \
   apt-get update -y ; \
-  pkgList="apt-utils zlib1g zlib1g-dev openssl libsqlite3-dev libxml2 libxml2-dev libcurl3-gnutls libcurl4-gnutls-dev libcurl4-openssl-dev libpng-dev libjpeg8 libjpeg8-dev libargon2-1 libargon2-dev libicu-dev libxslt1-dev libzip-dev libssl-dev libfreetype-dev libfreetype6 libpq-dev libpq5 libpcre3 libpcre3-dev libsodium-dev" ; \
+  pkgList="apt-utils zlib1g zlib1g-dev openssl libsqlite3-dev libxml2 libxml2-dev libcurl3-gnutls libcurl4-gnutls-dev libcurl4-openssl-dev libpng-dev libjpeg8 libjpeg8-dev libargon2-1 libargon2-dev libicu-dev libxslt1-dev libzip-dev libssl-dev libfreetype-dev libfreetype6 libpq-dev libpq5 libpcre3 libpcre3-dev libsodium-dev libonig-dev" ; \
   for Package in ${pkgList}; do \
   apt-get install -y --no-install-recommends ${Package} ; \
   done ; \
@@ -27,27 +27,19 @@ RUN set -eux \
   curl \
   supervisor ; \
   mkdir -p "${TMP}" && cd "${TMP}" ; \
-  curl -Lk --retry 3 "https://github.com/kkos/oniguruma/releases/download/v6.9.9/onig-6.9.9.tar.gz" | gunzip | tar x \
-  ; \
-  # curl -Lk --retry 3 "https://github.com/jedisct1/libsodium/releases/download/1.0.18-RELEASE/libsodium-1.0.18.tar.gz" | gunzip | tar x \
-  # curl -Lk --retry 3 "https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz" | gunzip | tar x \
-  # ; \
-  curl -Lk --retry 3 https://pecl.php.net/get/redis-6.1.0.tgz | gunzip | tar x \
+  curl -Lk --retry 3 "https://github.com/jedisct1/libsodium/releases/download/1.0.22-RELEASE/libsodium-1.0.22.tar.gz" | gunzip | tar x \
   ; \
   curl -Lk --retry 3 "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" | gunzip | tar x \
   ; \
   curl -Lk --retry 3 "https://php.net/distributions/php-${PHP_VERSION}.tar.gz" | gunzip | tar x \
   ; \
-  cd onig-6.9.9 ; \
-  ./configure --prefix=/usr ; \
-  make && make install ; \
-  # cd .. ; \
-  # cd libsodium-1.0.18 ; \
-  #   ./configure --disable-dependency-tracking --enable-minimal ; \
-  #   make && make install ; \
+  cd libsodium-1.0.22 ; \
+  # 不能使用 --enable-minimal: PHP 8.4+ 的 ext/sodium 需要 AEGIS API
+  ./configure --disable-dependency-tracking ; \
+  make && make install && ldconfig ; \
   cd .. ; \
   cd "php-${PHP_VERSION}" ; \  
-  export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/ ; \
+  export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig/ ; \
   ./configure --prefix=/usr/local/php/ \
   --with-config-file-path=/usr/local/php/etc/ \
   --with-config-file-scan-dir=/usr/local/php/etc/php.d/ \
@@ -73,7 +65,6 @@ RUN set -eux \
   --enable-xml \
   --enable-shmop \
   --enable-sysvsem \
-  --enable-mbregex \
   --enable-mbstring \
   --enable-ftp \
   --enable-mysqlnd \
@@ -108,15 +99,9 @@ RUN set -eux \
   php -r "unlink('composer-setup.php');" ; \
   mv composer.phar /usr/local/bin/composer ; \
   chmod +x /usr/local/bin/composer ; \
-  EXTENSION_DIR=$(php-config --extension-dir) ; \
-  cd redis-6.1.0 ; \
-  phpize ; \
-  ./configure --with-php-config=/usr/local/php/bin/php-config ; \
-  make && make install ; \
-  if [ -f "${EXTENSION_DIR}/redis.so" ]; then \
-  echo 'extension=redis.so' > /usr/local/php/etc/php.d/05-redis.ini ; \
-  fi ; \
-  cd .. ; \
+  curl -fL --retry 3 https://github.com/php/pie/releases/latest/download/pie.phar -o /usr/local/bin/pie ; \
+  chmod +x /usr/local/bin/pie ; \
+  pie install phpredis/phpredis ; \
   cd "nginx-${NGINX_VERSION}" ; \
   ./configure --prefix=/usr/local/nginx \
   --user=www --group=www \

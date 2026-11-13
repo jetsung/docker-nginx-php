@@ -1,46 +1,22 @@
 #!/bin/bash
 
-install_pecl_raphf() {
-    curl -Lk https://pecl.php.net/get/raphf-2.0.1.tgz | gunzip | tar x
-    cd raphf-2.0.1 || exit
+# 安装 PIE (PHP Installer for Extensions), 替代已弃用的 PECL
+install_pie() {
+    command -v pie >/dev/null 2>&1 && return
 
-    phpize
-    ./configure --with-php-config=/usr/local/php/bin/php-config
-    make && make install
-
-    EXTENSION_DIR=$(php-config --extension-dir)
-    if [ -f "$EXTENSION_DIR/raphf.so" ]; then
-        echo 'extension=raphf.so' >/usr/local/php/etc/php.d/05-raphf.ini
-    fi
-
-    cd ..
+    curl -fL --retry 3 https://github.com/php/pie/releases/latest/download/pie.phar \
+        -o /usr/local/bin/pie
+    chmod +x /usr/local/bin/pie
 }
 
-install_pecl_pq() {
-    curl -Lk https://pecl.php.net/get/pq-2.2.0.tgz | gunzip | tar x
-    cd pq-2.2.0 || exit
-
-    phpize
-    ./configure --with-php-config=/usr/local/php/bin/php-config
-    make && make install
-
-    EXTENSION_DIR=$(php-config --extension-dir)
-    if [ -f "$EXTENSION_DIR/pq.so" ]; then
-        echo 'extension=pq.so' >/usr/local/php/etc/php.d/02-pq.ini
-    fi
-
-    cd ..
+install_pq() {
+    install_pie
+    pie install m6w6/ext-pq
 }
 
 [ -d "/tmp/extension" ] || mkdir /tmp/extension
 
 pushd /tmp/extension || exit
-UNINSTALLED=$(php --ri raphf | grep 'not present')
-[ -z "$UNINSTALLED" ] || install_pecl_raphf
-
-INSTALLED_raphf=$(php --ri raphf | grep 'not present')
-INSTALLED_pq=$(php --ri pq | grep 'not present')
-if [ -n "$INSTALLED_pq" ] && [ -z "$INSTALLED_raphf" ]; then
-    install_pecl_pq
-fi
+UNINSTALLED=$(php --ri pq | grep 'not present')
+[ -z "$UNINSTALLED" ] || install_pq
 popd || exit

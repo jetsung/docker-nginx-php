@@ -1,38 +1,40 @@
 #!/bin/bash
 
-install_imagemagick() {
-    curl -Lk https://ghproxy.com/https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-19.tar.gz | gunzip | tar x
+# 安装 PIE (PHP Installer for Extensions), 替代已弃用的 PECL
+install_pie() {
+    command -v pie >/dev/null 2>&1 && return
 
-    cd ImageMagick-7.1.0-19 || exit
+    curl -fL --retry 3 https://github.com/php/pie/releases/latest/download/pie.phar \
+        -o /usr/local/bin/pie
+    chmod +x /usr/local/bin/pie
+}
+
+install_imagemagick() {
+    curl -Lk --retry 3 https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.2-35.tar.gz | gunzip | tar x
+
+    cd ImageMagick-7.1.2-35 || exit
     ./configure --prefix=/usr/local/imagemagick --enable-shared --enable-static
     make && make install
 
     cd ..
 }
 
-install_pecl_imagick() {
+install_imagick() {
     apt-get install -y libmagickwand-dev
     # or
     # install_imagemagick
 
-    curl -Lk https://pecl.php.net/get/imagick-3.6.0.tgz | gunzip | tar x
-    cd imagick-3.6.0 || exit
-
-    phpize
-    ./configure --with-php-config=/usr/local/php/bin/php-config --with-imagick=/usr/local/imagemagick
-    make && make install
-
-    EXTENSION_DIR=$(php-config --extension-dir)
-    if [ -f "$EXTENSION_DIR/imagick.so" ]; then
-        echo 'extension=imagick.so' >/usr/local/php/etc/php.d/03-imagick.ini
+    install_pie
+    if [ -d /usr/local/imagemagick ]; then
+        pie install imagick/imagick -- --with-imagick=/usr/local/imagemagick
+    else
+        pie install imagick/imagick
     fi
-
-    cd ..
 }
 
 [ -d "/tmp/extension" ] || mkdir /tmp/extension
 
 pushd /tmp/extension || exit
 UNINSTALLED=$(php --ri imagick | grep 'not present')
-[ -z "$UNINSTALLED" ] || install_pecl_imagick
+[ -z "$UNINSTALLED" ] || install_imagick
 popd || exit
