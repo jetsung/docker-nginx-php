@@ -13,6 +13,14 @@ on:
         default: "1.26.2"
         required: true
         type: string
+      php86:
+        description: "e.g: 8.6.0"
+        default: ""
+        type: string
+      php85:
+        description: "e.g: 8.5.1"
+        default: ""
+        type: string
       php84:
         description: "e.g: 8.4.010"
         default: ""
@@ -36,8 +44,12 @@ jobs:
     strategy:
       matrix:
         nginx: ["${{ inputs.nginx }}"]
-        php: ["8.4", "8.3", "8.2", "8.1"]
+        php: ["8.6", "8.5", "8.4", "8.3", "8.2", "8.1"]
         include:
+          - php: "8.6"
+            tag: ${{ inputs.php86 }}
+          - php: "8.5"
+            tag: ${{ inputs.php85 }}
           - php: "8.4"
             tag: ${{ inputs.php84 }}
           - php: "8.3"
@@ -78,7 +90,7 @@ jobs:
           IFS=' ' read -ra IMAGE <<< "$IMAGES"
           for element in "${IMAGE[@]}"; do
             LAT_VER=''
-            if [[ "${{ matrix.php }}" == "8.4" ]]; then
+            if [[ "${{ matrix.php }}" == "8.6" ]]; then
               LAT_VER="${element}:latest,"
             fi
             PRE_VER="${element}:${{ matrix.php }},"

@@ -19,7 +19,7 @@
 # 用法:
 #   ./build.sh [prefix] [env]
 #   环境变量:
-#     PHP_BRANCHES  参与构建的 PHP 分支, 默认 "8.5 8.4 8.3 8.2"
+#     PHP_BRANCHES  参与构建的 PHP 分支, 默认 "8.6 8.5 8.4 8.3 8.2"
 #     D_PUSH        是否推送镜像, 默认 false
 #     D_PLATFORM    构建平台, 默认 linux/amd64,linux/arm64
 
@@ -179,7 +179,7 @@ main() {
     fi
 
     if [ -z "${PHP_BRANCHES}" ]; then
-        PHP_BRANCHES="8.5 8.4 8.3 8.2"
+        PHP_BRANCHES="8.6 8.5 8.4 8.3 8.2"
     fi
 
     if [ -z "${VERSION_FILE}" ]; then

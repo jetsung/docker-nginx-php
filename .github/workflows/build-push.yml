@@ -13,6 +13,10 @@ on:
         default: ""
         required: false
         type: string
+      php86:
+        description: "php 8.6 version, e.g: 8.6.0 (留空则自动获取)"
+        default: ""
+        type: string
       php85:
         description: "php 8.5 version, e.g: 8.5.1 (留空则自动获取)"
         default: ""
@@ -38,8 +42,8 @@ permissions:
   packages: write
 
 env:
-  PHP_BRANCHES: "8.5 8.4 8.3 8.2"
-  LATEST_BRANCH: "8.5"
+  PHP_BRANCHES: "8.6 8.5 8.4 8.3 8.2"
+  LATEST_BRANCH: "8.6"
 
 jobs:
   prepare:
@@ -89,6 +93,7 @@ jobs:
             INPUT_VAR=$(echo "${BR}" | tr -d '.')
             PHP_INPUT=""
             case "${BR}" in
+              8.6) PHP_INPUT="${{ inputs.php86 }}" ;;
               8.5) PHP_INPUT="${{ inputs.php85 }}" ;;
               8.4) PHP_INPUT="${{ inputs.php84 }}" ;;
               8.3) PHP_INPUT="${{ inputs.php83 }}" ;;
