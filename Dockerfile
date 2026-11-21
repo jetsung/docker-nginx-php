@@ -101,7 +101,10 @@ RUN set -eux \
   chmod +x /usr/local/bin/composer ; \
   curl -fL --retry 3 https://github.com/php/pie/releases/latest/download/pie.phar -o /usr/local/bin/pie ; \
   chmod +x /usr/local/bin/pie ; \
-  pie install phpredis/phpredis ; \
+  case "${PHP_VERSION}" in \
+  8.[6-9].* | [9-9].*) pie install "phpredis/phpredis:dev-develop" ;; \
+  *) pie install phpredis/phpredis ;; \
+  esac ; \
   cd "nginx-${NGINX_VERSION}" ; \
   ./configure --prefix=/usr/local/nginx \
   --user=www --group=www \
